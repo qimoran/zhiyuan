@@ -1,0 +1,16 @@
+scrapy>=2.11
+beautifulsoup4
+lxml
+requests
+scrapy-redis
+fake-useragent
+pandas
+numpy
+pymysql
+sqlalchemy
+redis
+pyspark==3.5.1
+findspark
+pyecharts
+flask
+setuptools
