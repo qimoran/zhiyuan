@@ -1,0 +1,603 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - banner [ref=e6]:
+      - generic [ref=e7]:
+        - link "掌上考研" [ref=e9] [cursor=pointer]:
+          - /url: /
+          - img "掌上考研" [ref=e10]
+        - generic [ref=e11]:
+          - link "首页" [ref=e12] [cursor=pointer]:
+            - /url: /
+          - link "查院校" [ref=e13] [cursor=pointer]:
+            - /url: /school-list
+          - link "查专业" [ref=e14] [cursor=pointer]:
+            - /url: /major-list
+          - link "资料真题" [ref=e15] [cursor=pointer]:
+            - /url: /tools-box/zhenti
+          - link "调剂" [ref=e16] [cursor=pointer]:
+            - /url: /tjcx-universities-recommend
+          - link "AI 择校" [ref=e17] [cursor=pointer]:
+            - /url: /select-school-condition
+          - link "课程" [ref=e18] [cursor=pointer]:
+            - /url: /course
+          - link "直播" [ref=e19] [cursor=pointer]:
+            - /url: /live-home
+          - link "申请制" [ref=e20] [cursor=pointer]:
+            - /url: /sqz
+          - generic [ref=e21] [cursor=pointer]: 更多
+        - generic [ref=e22]:
+          - textbox "查院校，查专业，查资讯，找好课" [ref=e23]
+          - button "" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: 
+        - generic [ref=e27] [cursor=pointer]: 登录
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: 院校库查询全国研招院校信息数据
+          - generic [ref=e32]:
+            - textbox "请输入院校名称" [ref=e33]
+            - button "" [ref=e34] [cursor=pointer]:
+              - generic [ref=e35]: 
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - generic [ref=e39]: 院校位置
+              - generic [ref=e40]: ":"
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - generic [ref=e43] [cursor=pointer]: 全部
+                - generic [ref=e44]: A区
+                - generic [ref=e45]:
+                  - generic [ref=e46] [cursor=pointer]: 北京
+                  - generic [ref=e47] [cursor=pointer]: 天津
+                  - generic [ref=e48] [cursor=pointer]: 河北
+                  - generic [ref=e49] [cursor=pointer]: 山西
+                  - generic [ref=e50] [cursor=pointer]: 辽宁
+                  - generic [ref=e51] [cursor=pointer]: 吉林
+                  - generic [ref=e52] [cursor=pointer]: 黑龙江
+                  - generic [ref=e53] [cursor=pointer]: 上海
+                  - generic [ref=e54] [cursor=pointer]: 江苏
+                  - generic [ref=e55] [cursor=pointer]: 浙江
+                  - generic [ref=e56] [cursor=pointer]: 安徽
+                  - generic [ref=e57] [cursor=pointer]: 福建
+                  - generic [ref=e58] [cursor=pointer]: 江西
+                  - generic [ref=e59] [cursor=pointer]: 山东
+                  - generic [ref=e60] [cursor=pointer]: 河南
+                  - generic [ref=e61] [cursor=pointer]: 湖北
+                  - generic [ref=e62] [cursor=pointer]: 湖南
+                  - generic [ref=e63] [cursor=pointer]: 广东
+                  - generic [ref=e64] [cursor=pointer]: 重庆
+                  - generic [ref=e65] [cursor=pointer]: 四川
+                  - generic [ref=e66] [cursor=pointer]: 陕西
+              - generic [ref=e67]:
+                - generic [ref=e69]: B区
+                - generic [ref=e70]:
+                  - generic [ref=e71] [cursor=pointer]: 内蒙古
+                  - generic [ref=e72] [cursor=pointer]: 广西
+                  - generic [ref=e73] [cursor=pointer]: 海南
+                  - generic [ref=e74] [cursor=pointer]: 贵州
+                  - generic [ref=e75] [cursor=pointer]: 云南
+                  - generic [ref=e76] [cursor=pointer]: 西藏
+                  - generic [ref=e77] [cursor=pointer]: 甘肃
+                  - generic [ref=e78] [cursor=pointer]: 青海
+                  - generic [ref=e79] [cursor=pointer]: 宁夏
+                  - generic [ref=e80] [cursor=pointer]: 新疆
+              - generic [ref=e81]:
+                - generic [ref=e83]: 其他
+                - generic [ref=e84]:
+                  - generic [ref=e85] [cursor=pointer]: 台湾
+                  - generic [ref=e86] [cursor=pointer]: 香港
+                  - generic [ref=e87] [cursor=pointer]: 澳门
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - generic [ref=e90]: 院校类型
+              - generic [ref=e91]: ":"
+            - generic [ref=e92]:
+              - generic [ref=e93] [cursor=pointer]: 全部
+              - generic [ref=e94]:
+                - generic [ref=e95] [cursor=pointer]: 综合类
+                - generic [ref=e96] [cursor=pointer]: 理工类
+                - generic [ref=e97] [cursor=pointer]: 农林类
+                - generic [ref=e98] [cursor=pointer]: 医药类
+                - generic [ref=e99] [cursor=pointer]: 师范类
+                - generic [ref=e100] [cursor=pointer]: 语言类
+                - generic [ref=e101] [cursor=pointer]: 财经类
+                - generic [ref=e102] [cursor=pointer]: 政法类
+                - generic [ref=e103] [cursor=pointer]: 体育类
+                - generic [ref=e104] [cursor=pointer]: 艺术类
+                - generic [ref=e105] [cursor=pointer]: 民族类
+                - generic [ref=e106] [cursor=pointer]: 军事类
+                - generic [ref=e107] [cursor=pointer]: 其他
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: 院校层次
+              - generic [ref=e111]: ":"
+            - generic [ref=e112]:
+              - generic [ref=e113] [cursor=pointer]: 全部
+              - generic [ref=e114]:
+                - generic [ref=e115] [cursor=pointer]: "985"
+                - generic [ref=e116] [cursor=pointer]: "211"
+                - generic [ref=e117] [cursor=pointer]: 双一流
+                - generic [ref=e118] [cursor=pointer]: 自划线
+                - generic [ref=e119] [cursor=pointer]: 申请制
+                - generic [ref=e120] [cursor=pointer]: 科研院所
+                - generic [ref=e121] [cursor=pointer]: 普通院校
+        - generic [ref=e122]: 共找到21条结果
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e126]:
+              - generic [ref=e127] [cursor=pointer]:
+                - img "重庆大学" [ref=e129]
+                - generic [ref=e130]:
+                  - generic [ref=e131]:
+                    - generic [ref=e132]: 重庆大学
+                    - generic [ref=e133]:
+                      - generic [ref=e134]: 
+                      - text: 重庆
+                  - generic [ref=e135]:
+                    - generic [ref=e136]: "985"
+                    - generic [ref=e137]: "211"
+                    - generic [ref=e138]: 双一流
+                    - generic [ref=e139]: 自划线
+                  - generic [ref=e140]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e141]:
+                  - generic [ref=e142]: 
+                  - text: 关注
+              - generic [ref=e143] [cursor=pointer]:
+                - img "西南大学" [ref=e145]
+                - generic [ref=e146]:
+                  - generic [ref=e147]:
+                    - generic [ref=e148]: 西南大学
+                    - generic [ref=e149]:
+                      - generic [ref=e150]: 
+                      - text: 重庆
+                  - generic [ref=e151]:
+                    - generic [ref=e152]: "211"
+                    - generic [ref=e153]: 双一流
+                  - generic [ref=e154]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e155]:
+                  - generic [ref=e156]: 
+                  - text: 关注
+              - generic [ref=e157] [cursor=pointer]:
+                - img "重庆医科大学" [ref=e159]
+                - generic [ref=e160]:
+                  - generic [ref=e161]:
+                    - generic [ref=e162]: 重庆医科大学
+                    - generic [ref=e163]:
+                      - generic [ref=e164]: 
+                      - text: 重庆
+                  - generic [ref=e166]: 普通院校
+                  - generic [ref=e167]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e168]:
+                  - generic [ref=e169]: 
+                  - text: 关注
+              - generic [ref=e170] [cursor=pointer]:
+                - img "重庆邮电大学" [ref=e172]
+                - generic [ref=e173]:
+                  - generic [ref=e174]:
+                    - generic [ref=e175]: 重庆邮电大学
+                    - generic [ref=e176]:
+                      - generic [ref=e177]: 
+                      - text: 重庆
+                  - generic [ref=e179]: 普通院校
+                  - generic [ref=e180]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e181]:
+                  - generic [ref=e182]: 
+                  - text: 关注
+              - generic [ref=e183] [cursor=pointer]:
+                - img "西南政法大学" [ref=e185]
+                - generic [ref=e186]:
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: 西南政法大学
+                    - generic [ref=e189]:
+                      - generic [ref=e190]: 
+                      - text: 重庆
+                  - generic [ref=e192]: 普通院校
+                  - generic [ref=e193]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e194]:
+                  - generic [ref=e195]: 
+                  - text: 关注
+              - generic [ref=e196] [cursor=pointer]:
+                - img "重庆交通大学" [ref=e198]
+                - generic [ref=e199]:
+                  - generic [ref=e200]:
+                    - generic [ref=e201]: 重庆交通大学
+                    - generic [ref=e202]:
+                      - generic [ref=e203]: 
+                      - text: 重庆
+                  - generic [ref=e205]: 普通院校
+                  - generic [ref=e206]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e207]:
+                  - generic [ref=e208]: 
+                  - text: 关注
+              - generic [ref=e209] [cursor=pointer]:
+                - img "重庆师范大学" [ref=e211]
+                - generic [ref=e212]:
+                  - generic [ref=e213]:
+                    - generic [ref=e214]: 重庆师范大学
+                    - generic [ref=e215]:
+                      - generic [ref=e216]: 
+                      - text: 重庆
+                  - generic [ref=e218]: 普通院校
+                  - generic [ref=e219]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e220]:
+                  - generic [ref=e221]: 
+                  - text: 关注
+              - generic [ref=e222] [cursor=pointer]:
+                - img "重庆理工大学" [ref=e224]
+                - generic [ref=e225]:
+                  - generic [ref=e226]:
+                    - generic [ref=e227]: 重庆理工大学
+                    - generic [ref=e228]:
+                      - generic [ref=e229]: 
+                      - text: 重庆
+                  - generic [ref=e231]: 普通院校
+                  - generic [ref=e232]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e233]:
+                  - generic [ref=e234]: 
+                  - text: 关注
+              - generic [ref=e235] [cursor=pointer]:
+                - img "重庆科技大学" [ref=e237]
+                - generic [ref=e238]:
+                  - generic [ref=e239]:
+                    - generic [ref=e240]: 重庆科技大学
+                    - generic [ref=e241]:
+                      - generic [ref=e242]: 
+                      - text: 重庆
+                  - generic [ref=e244]: 普通院校
+                  - generic [ref=e245]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e246]:
+                  - generic [ref=e247]: 
+                  - text: 关注
+              - generic [ref=e248] [cursor=pointer]:
+                - img "重庆工商大学" [ref=e250]
+                - generic [ref=e251]:
+                  - generic [ref=e252]:
+                    - generic [ref=e253]: 重庆工商大学
+                    - generic [ref=e254]:
+                      - generic [ref=e255]: 
+                      - text: 重庆
+                  - generic [ref=e257]: 普通院校
+                  - generic [ref=e258]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e259]:
+                  - generic [ref=e260]: 
+                  - text: 关注
+              - generic [ref=e261] [cursor=pointer]:
+                - img "四川外国语大学" [ref=e263]
+                - generic [ref=e264]:
+                  - generic [ref=e265]:
+                    - generic [ref=e266]: 四川外国语大学
+                    - generic [ref=e267]:
+                      - generic [ref=e268]: 
+                      - text: 重庆
+                  - generic [ref=e270]: 普通院校
+                  - generic [ref=e271]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e272]:
+                  - generic [ref=e273]: 
+                  - text: 关注
+              - generic [ref=e274] [cursor=pointer]:
+                - img "重庆文理学院" [ref=e276]
+                - generic [ref=e277]:
+                  - generic [ref=e278]:
+                    - generic [ref=e279]: 重庆文理学院
+                    - generic [ref=e280]:
+                      - generic [ref=e281]: 
+                      - text: 重庆
+                  - generic [ref=e283]: 普通院校
+                  - generic [ref=e284]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e285]:
+                  - generic [ref=e286]: 
+                  - text: 关注
+              - generic [ref=e287] [cursor=pointer]:
+                - img "重庆三峡科技大学" [ref=e289]
+                - generic [ref=e290]:
+                  - generic [ref=e291]:
+                    - generic [ref=e292]: 重庆三峡科技大学
+                    - generic [ref=e293]:
+                      - generic [ref=e294]: 
+                      - text: 重庆
+                  - generic [ref=e296]: 普通院校
+                  - generic [ref=e297]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e298]:
+                  - generic [ref=e299]: 
+                  - text: 关注
+              - generic [ref=e300] [cursor=pointer]:
+                - img "陆军军医大学" [ref=e302]
+                - generic [ref=e303]:
+                  - generic [ref=e304]:
+                    - generic [ref=e305]: 陆军军医大学
+                    - generic [ref=e306]:
+                      - generic [ref=e307]: 
+                      - text: 重庆
+                  - generic [ref=e309]: 普通院校
+                  - generic [ref=e310]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e311]:
+                  - generic [ref=e312]: 
+                  - text: 关注
+              - generic [ref=e313] [cursor=pointer]:
+                - img "四川美术学院" [ref=e315]
+                - generic [ref=e316]:
+                  - generic [ref=e317]:
+                    - generic [ref=e318]: 四川美术学院
+                    - generic [ref=e319]:
+                      - generic [ref=e320]: 
+                      - text: 重庆
+                  - generic [ref=e322]: 普通院校
+                  - generic [ref=e323]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e324]:
+                  - generic [ref=e325]: 
+                  - text: 关注
+              - generic [ref=e326] [cursor=pointer]:
+                - img "联勤保障部队工程大学" [ref=e328]
+                - generic [ref=e329]:
+                  - generic [ref=e330]:
+                    - generic [ref=e331]: 联勤保障部队工程大学
+                    - generic [ref=e332]:
+                      - generic [ref=e333]: 
+                      - text: 重庆
+                  - generic [ref=e335]: 普通院校
+                  - generic [ref=e336]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e337]:
+                  - generic [ref=e338]: 
+                  - text: 关注
+              - generic [ref=e339] [cursor=pointer]:
+                - img "中共重庆市委党校" [ref=e341]
+                - generic [ref=e342]:
+                  - generic [ref=e343]:
+                    - generic [ref=e344]: 中共重庆市委党校
+                    - generic [ref=e345]:
+                      - generic [ref=e346]: 
+                      - text: 重庆
+                  - generic [ref=e348]: 科研院所
+                  - generic [ref=e349]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e350]:
+                  - generic [ref=e351]: 
+                  - text: 关注
+              - generic [ref=e352] [cursor=pointer]:
+                - img "重庆中医药学院" [ref=e354]
+                - generic [ref=e355]:
+                  - generic [ref=e356]:
+                    - generic [ref=e357]: 重庆中医药学院
+                    - generic [ref=e358]:
+                      - generic [ref=e359]: 
+                      - text: 重庆
+                  - generic [ref=e361]: 普通院校
+                  - generic [ref=e362]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e363]:
+                  - generic [ref=e364]: 
+                  - text: 关注
+              - generic [ref=e365] [cursor=pointer]:
+                - img "中国科学院大学重庆学院" [ref=e367]
+                - generic [ref=e368]:
+                  - generic [ref=e369]:
+                    - generic [ref=e370]: 中国科学院大学重庆学院
+                    - generic [ref=e371]:
+                      - generic [ref=e372]: 
+                      - text: 重庆
+                  - generic [ref=e374]: 科研院所
+                  - generic [ref=e375]: 招生简章 复试分数 历年真题调剂查询
+                - generic [ref=e376]:
+                  - generic [ref=e377]: 
+                  - text: 关注
+              - generic [ref=e378] [cursor=pointer]:
+                - img "长江师范学院" [ref=e380]
+                - generic [ref=e381]:
+                  - generic [ref=e382]:
+                    - generic [ref=e383]: 长江师范学院
+                    - generic [ref=e384]:
+                      - generic [ref=e385]: 
+                      - text: 重庆
+                  - generic [ref=e387]: 普通院校
+                  - generic [ref=e388]: 招生简章 招生计划 复试分数 历年真题调剂查询
+                - generic [ref=e389]:
+                  - generic [ref=e390]: 
+                  - text: 关注
+            - list [ref=e393]:
+              - listitem "上一页" [ref=e394]:
+                - 'generic "图标: left" [ref=e396]':
+                  - img [ref=e397]
+              - listitem "1" [ref=e399] [cursor=pointer]:
+                - generic [ref=e400]: "1"
+              - listitem "2" [ref=e401] [cursor=pointer]:
+                - generic [ref=e402]: "2"
+              - listitem "下一页" [ref=e403] [cursor=pointer]:
+                - 'generic "图标: right" [ref=e405]':
+                  - img [ref=e406]
+          - generic [ref=e411]:
+            - generic [ref=e412]: 热门院校推荐
+            - list [ref=e414]:
+              - listitem "郑州大学" [ref=e415]:
+                - link "郑州大学 郑州大学  A区 河南 综合类" [ref=e416] [cursor=pointer]:
+                  - /url: /school/25
+                  - img "郑州大学" [ref=e417]
+                  - generic [ref=e418]:
+                    - generic [ref=e419]:
+                      - generic [ref=e420]: 郑州大学
+                      - generic [ref=e421]: 
+                    - generic [ref=e422]:
+                      - generic [ref=e423]: A区
+                      - generic [ref=e424]: 河南
+                      - generic [ref=e425]: 综合类
+              - listitem "河南农业大学" [ref=e426]:
+                - link "河南农业大学 河南农业大学  A区 河南 农林类" [ref=e427] [cursor=pointer]:
+                  - /url: /school/494
+                  - img "河南农业大学" [ref=e428]
+                  - generic [ref=e429]:
+                    - generic [ref=e430]:
+                      - generic [ref=e431]: 河南农业大学
+                      - generic [ref=e432]: 
+                    - generic [ref=e433]:
+                      - generic [ref=e434]: A区
+                      - generic [ref=e435]: 河南
+                      - generic [ref=e436]: 农林类
+              - listitem "河南医药大学" [ref=e437]:
+                - link "河南医药大学 河南医药大学  A区 河南 医药类" [ref=e438] [cursor=pointer]:
+                  - /url: /school/495
+                  - img "河南医药大学" [ref=e439]
+                  - generic [ref=e440]:
+                    - generic [ref=e441]:
+                      - generic [ref=e442]: 河南医药大学
+                      - generic [ref=e443]: 
+                    - generic [ref=e444]:
+                      - generic [ref=e445]: A区
+                      - generic [ref=e446]: 河南
+                      - generic [ref=e447]: 医药类
+              - listitem "四川轻化工大学" [ref=e448]:
+                - link "四川轻化工大学 四川轻化工大学  A区 四川 理工类" [ref=e449] [cursor=pointer]:
+                  - /url: /school/1047
+                  - img "四川轻化工大学" [ref=e450]
+                  - generic [ref=e451]:
+                    - generic [ref=e452]:
+                      - generic [ref=e453]: 四川轻化工大学
+                      - generic [ref=e454]: 
+                    - generic [ref=e455]:
+                      - generic [ref=e456]: A区
+                      - generic [ref=e457]: 四川
+                      - generic [ref=e458]: 理工类
+              - listitem "陕西理工大学" [ref=e459]:
+                - link "陕西理工大学 陕西理工大学  A区 陕西 理工类" [ref=e460] [cursor=pointer]:
+                  - /url: /school/1060
+                  - img "陕西理工大学" [ref=e461]
+                  - generic [ref=e462]:
+                    - generic [ref=e463]:
+                      - generic [ref=e464]: 陕西理工大学
+                      - generic [ref=e465]: 
+                    - generic [ref=e466]:
+                      - generic [ref=e467]: A区
+                      - generic [ref=e468]: 陕西
+                      - generic [ref=e469]: 理工类
+              - listitem "重庆文理学院" [ref=e470]:
+                - link "重庆文理学院 重庆文理学院  A区 重庆 综合类" [ref=e471] [cursor=pointer]:
+                  - /url: /school/1496
+                  - img "重庆文理学院" [ref=e472]
+                  - generic [ref=e473]:
+                    - generic [ref=e474]:
+                      - generic [ref=e475]: 重庆文理学院
+                      - generic [ref=e476]: 
+                    - generic [ref=e477]:
+                      - generic [ref=e478]: A区
+                      - generic [ref=e479]: 重庆
+                      - generic [ref=e480]: 综合类
+              - listitem "中国石油大学（北京）" [ref=e481]:
+                - link "中国石油大学（北京） 中国石油大学（北京） A区 北京 理工类" [ref=e482] [cursor=pointer]:
+                  - /url: /school/950
+                  - img "中国石油大学（北京）" [ref=e483]
+                  - generic [ref=e484]:
+                    - generic [ref=e486]: 中国石油大学（北京）
+                    - generic [ref=e487]:
+                      - generic [ref=e488]: A区
+                      - generic [ref=e489]: 北京
+                      - generic [ref=e490]: 理工类
+              - listitem "西南交通大学" [ref=e491]:
+                - link "西南交通大学 西南交通大学 A区 四川 理工类" [ref=e492] [cursor=pointer]:
+                  - /url: /school/220
+                  - img "西南交通大学" [ref=e493]
+                  - generic [ref=e494]:
+                    - generic [ref=e496]: 西南交通大学
+                    - generic [ref=e497]:
+                      - generic [ref=e498]: A区
+                      - generic [ref=e499]: 四川
+                      - generic [ref=e500]: 理工类
+              - listitem "北京化工大学" [ref=e501]:
+                - link "北京化工大学 北京化工大学 A区 北京 理工类" [ref=e502] [cursor=pointer]:
+                  - /url: /school/411
+                  - img "北京化工大学" [ref=e503]
+                  - generic [ref=e504]:
+                    - generic [ref=e506]: 北京化工大学
+                    - generic [ref=e507]:
+                      - generic [ref=e508]: A区
+                      - generic [ref=e509]: 北京
+                      - generic [ref=e510]: 理工类
+              - listitem "宁波大学" [ref=e511]:
+                - link "宁波大学 宁波大学 A区 浙江 综合类" [ref=e512] [cursor=pointer]:
+                  - /url: /school/143
+                  - img "宁波大学" [ref=e513]
+                  - generic [ref=e514]:
+                    - generic [ref=e516]: 宁波大学
+                    - generic [ref=e517]:
+                      - generic [ref=e518]: A区
+                      - generic [ref=e519]: 浙江
+                      - generic [ref=e520]: 综合类
+      - text:   
+    - generic [ref=e524]:
+      - generic [ref=e525]:
+        - generic [ref=e527]: 本站信息查询仅供参考，具体数据请以学校官网或考试院公布为准
+        - generic [ref=e528]: 本站数据未经授权严禁转载，违者将依法追究责任
+      - generic [ref=e529]:
+        - generic [ref=e530]:
+          - generic [ref=e531]: 联系我们
+          - list [ref=e532]:
+            - listitem [ref=e533]:
+              - generic [ref=e534]: 
+              - text: 商务合作电话 400-6330-111
+            - listitem [ref=e535]:
+              - generic [ref=e536]: 
+              - text: 电子邮件 wuwenyang@eol.cn
+            - listitem [ref=e537]:
+              - generic [ref=e538] [cursor=pointer]:
+                - generic [ref=e539]: 
+                - text: 意见反馈
+        - generic [ref=e540]:
+          - generic [ref=e541]: 相关网站
+          - generic [ref=e542]:
+            - list [ref=e543]:
+              - listitem [ref=e544]:
+                - link "EOL教育在线" [ref=e545] [cursor=pointer]:
+                  - /url: https://www.eol.cn/
+              - listitem [ref=e546]:
+                - link "高考频道" [ref=e547] [cursor=pointer]:
+                  - /url: https://gaokao.eol.cn/
+              - listitem [ref=e548]:
+                - link "掌上高考" [ref=e549] [cursor=pointer]:
+                  - /url: https://www.gaokao.cn/
+              - listitem [ref=e550]:
+                - link "考研频道" [ref=e551] [cursor=pointer]:
+                  - /url: https://kaoyan.eol.cn/
+            - list [ref=e552]:
+              - listitem [ref=e553]:
+                - link "职教网" [ref=e554] [cursor=pointer]:
+                  - /url: https://www.zhijiao.cn/sd-jn
+              - listitem [ref=e555]:
+                - link "就业桥" [ref=e556] [cursor=pointer]:
+                  - /url: https://www.gaokao.cn/px/
+              - listitem [ref=e557]:
+                - link "掌上培训" [ref=e558] [cursor=pointer]:
+                  - /url: https://www.jiuyeqiao.cn/
+              - listitem [ref=e559]:
+                - link "数智云服" [ref=e560] [cursor=pointer]:
+                  - /url: https://yun.eol.cn/
+            - list [ref=e561]:
+              - listitem [ref=e562]:
+                - link "保研网" [ref=e563] [cursor=pointer]:
+                  - /url: https://www.baoyan.com
+        - generic [ref=e564]:
+          - generic [ref=e565]:
+            - img "掌上考研APP" [ref=e566]
+            - generic [ref=e567]: 掌上考研APP
+          - generic [ref=e568]:
+            - img "掌上考研公众号" [ref=e569]
+            - generic [ref=e570]: 掌上考研公众号
+          - generic [ref=e571]:
+            - img "掌上考研企微" [ref=e572]
+            - generic [ref=e573]: 掌上考研企微
+          - generic [ref=e574]:
+            - img "掌上考研头条号" [ref=e575]
+            - generic [ref=e576]: 掌上考研头条号
+          - generic [ref=e577]:
+            - img "掌上考研视频号" [ref=e578]
+            - generic [ref=e579]: 掌上考研视频号
+      - generic [ref=e580]:
+        - generic [ref=e581]: 版权所有：中教智网（北京）信息技术有限公司
+        - generic [ref=e582]:
+          - link "京B2-20213236" [ref=e583] [cursor=pointer]:
+            - /url: https://img.eol.cn/e_images/gk/2022/jyxkz.jpg
+          - text: 丨
+          - link "京ICP备2020046552号-3" [ref=e584] [cursor=pointer]:
+            - /url: https://beian.miit.gov.cn/
+          - text: 丨
+          - link "京公网安备 11010802038361号" [ref=e585] [cursor=pointer]:
+            - /url: http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802038361
+  - generic [ref=e586] [cursor=pointer]:
+    - button "animation" [ref=e589]:
+      - img [ref=e590]
+    - generic [ref=e618]: 
