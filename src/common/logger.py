@@ -38,6 +38,13 @@ def setup_logging(config_path: str | Path | None = None) -> None:
             _ensure_handler_dirs(config)
             logging.config.dictConfig(config)
             return
+        except ImportError:
+            logging.basicConfig(
+                level=logging.INFO,
+                format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+            )
+            logging.getLogger(__name__).warning("未安装 PyYAML，已使用默认日志配置")
+            return
         except Exception:
             logging.basicConfig(
                 level=logging.INFO,

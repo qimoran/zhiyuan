@@ -1,0 +1,15 @@
+beautifulsoup4
+flask
+lxml
+numpy
+openpyxl
+pandas
+pdfplumber
+pymysql
+pyspark==3.5.1
+pytest
+python-dotenv
+pyyaml
+redis
+requests
+sqlalchemy

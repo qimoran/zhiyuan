@@ -1,0 +1,9 @@
+mysql:
+  # 容器内访问 MySQL 服务时使用 mysql；宿主机直连时可改为 127.0.0.1。
+  host: mysql
+  port: 3306
+  database: zhiyuan
+  user: zhiyuan_app
+  # 密码优先从 .env 的 ZHIYUAN_DB_PASSWORD 读取，这里不写真实密码。
+  password: ""
+  charset: utf8mb4

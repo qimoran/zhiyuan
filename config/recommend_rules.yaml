@@ -1,0 +1,30 @@
+score_thresholds:
+  # 单科高出分数线小于该值时提示风险。
+  single_subject_warning_diff: 5
+  # 总分高出分数线小于该值时提示风险。
+  total_score_warning_diff: 10
+  # 冲刺档参考：用户总分与拟录取平均分差值范围。
+  rush_avg_score_diff_min: -10
+  rush_avg_score_diff_max: 10
+  # 稳妥档参考：用户总分至少高于拟录取平均分的分数。
+  stable_avg_score_diff_min: 10
+  # 保底档参考：用户总分至少高于拟录取最低分的分数。
+  safe_min_score_diff_min: 25
+
+weights:
+  total_score_diff: 0.35
+  admission_avg_diff: 0.25
+  single_subject_safety: 0.15
+  plan_stability: 0.15
+  school_level: 0.10
+
+school_level_bonus:
+  "985": 10
+  "211": 6
+  "双一流": 5
+  "普通院校": 0
+
+data_quality_penalty:
+  missing_admission_records: -10
+  less_than_three_years: -8
+  missing_plan: -5

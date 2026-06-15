@@ -6,6 +6,8 @@ scrapy-redis
 fake-useragent
 pandas
 numpy
+openpyxl
+pdfplumber
 pymysql
 sqlalchemy
 redis
@@ -13,4 +15,7 @@ pyspark==3.5.1
 findspark
 pyecharts
 flask
+pytest
+python-dotenv
+pyyaml
 setuptools
