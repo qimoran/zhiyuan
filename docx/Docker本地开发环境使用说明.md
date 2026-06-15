@@ -77,7 +77,233 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\start_dev_env.ps1" -SkipChec
 | Spark Master | `http://127.0.0.1:18080` | `spark-master:8080` |
 | Spark Worker | `http://127.0.0.1:18081` | `spark-worker:8081` |
 
-## 6. 数据库默认配置
+## 6. 进入 Docker 与各组件命令
+
+下面命令默认在项目根目录执行：
+
+```powershell
+cd "D:\bigdatashixun\zhiyuan"
+```
+
+### 6.1 查看 Docker 容器状态
+
+查看当前项目的容器状态：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools ps
+```
+
+查看当前正在运行的 `zhitu` 相关容器：
+
+```powershell
+docker ps --filter "name=zhitu"
+```
+
+查看某个服务日志，例如 HiveServer2：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools logs -f hiveserver2
+```
+
+进入 Python 工具容器：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec python bash
+```
+
+退出容器终端：
+
+```powershell
+exit
+```
+
+### 6.2 进入 MySQL
+
+使用 root 用户进入 MySQL：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec mysql mysql -uroot -p
+```
+
+提示输入密码时输入：
+
+```text
+root123456
+```
+
+使用项目业务用户进入 `zhiyuan` 数据库：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec mysql mysql -uzhiyuan_app -p zhiyuan
+```
+
+提示输入密码时输入：
+
+```text
+zhiyuan123456
+```
+
+进入 MySQL 后常用 SQL：
+
+```sql
+SHOW DATABASES;
+USE zhiyuan;
+SHOW TABLES;
+SELECT DATABASE();
+EXIT;
+```
+
+如果本机安装了 MySQL 客户端，也可以从 Windows 直接连接：
+
+```powershell
+mysql -h 127.0.0.1 -P 13306 -uzhiyuan_app -p zhiyuan
+```
+
+### 6.3 进入 Redis
+
+进入 Redis 命令行：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec redis redis-cli
+```
+
+进入 Redis 后常用命令：
+
+```text
+PING
+KEYS *
+DBSIZE
+GET key_name
+DEL key_name
+EXIT
+```
+
+如果本机安装了 Redis 客户端，也可以从 Windows 直接连接：
+
+```powershell
+redis-cli -h 127.0.0.1 -p 16379
+```
+
+### 6.4 进入 Hive
+
+进入 HiveServer2 的 Beeline 命令行：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec hiveserver2 beeline -u "jdbc:hive2://localhost:10000" -n root
+```
+
+进入 Beeline 后常用命令：
+
+```sql
+SHOW DATABASES;
+USE default;
+SHOW TABLES;
+!quit
+```
+
+直接执行一条 Hive SQL：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec hiveserver2 beeline -u "jdbc:hive2://localhost:10000" -n root -e "SHOW DATABASES;"
+```
+
+查看 HiveServer2 日志：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools logs -f hiveserver2
+```
+
+### 6.5 进入 Spark
+
+进入 Spark Master 容器：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec spark-master bash
+```
+
+进入 Spark SQL：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec spark-master spark-sql --master spark://spark-master:7077
+```
+
+进入 Spark SQL 后常用命令：
+
+```sql
+SHOW DATABASES;
+SHOW TABLES;
+EXIT;
+```
+
+运行项目内置 Spark 检查作业：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec python python scripts/check_bigdata_connections.py --spark-job
+```
+
+查看 Spark Master 日志：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools logs -f spark-master
+```
+
+### 6.6 进入 Hadoop 和 HDFS
+
+进入 Hadoop NameNode 容器：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec namenode bash
+```
+
+在容器内查看 HDFS 根目录：
+
+```powershell
+hdfs dfs -ls /
+```
+
+常用 HDFS 命令：
+
+```powershell
+hdfs dfs -mkdir -p /user/root/test
+hdfs dfs -put /etc/hosts /user/root/test/hosts.txt
+hdfs dfs -ls /user/root/test
+hdfs dfs -cat /user/root/test/hosts.txt
+hdfs dfs -rm /user/root/test/hosts.txt
+```
+
+从 Windows 直接执行 HDFS 命令：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec namenode hdfs dfs -ls /
+```
+
+查看 YARN 应用列表：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools exec resourcemanager yarn application -list
+```
+
+查看 NameNode 日志：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools logs -f namenode
+```
+
+### 6.7 重启单个服务
+
+如果某个服务异常，可以只重启该服务。例如重启 HiveServer2：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools restart hiveserver2
+```
+
+重启 Spark Worker：
+
+```powershell
+docker compose --profile hadoop --profile hive --profile spark --profile tools restart spark-worker
+```
+
+## 7. 数据库默认配置
 
 | 项目 | 默认值 |
 | --- | --- |
@@ -91,7 +317,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\start_dev_env.ps1" -SkipChec
 
 这些默认值只用于本地开发和课程实训，不用于真实生产环境。
 
-## 7. 文件说明
+## 8. 文件说明
 
 | 文件或目录 | 说明 |
 | --- | --- |
@@ -105,7 +331,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\start_dev_env.ps1" -SkipChec
 | `scripts/stop_dev_env.ps1` | 停止环境脚本 |
 | `scripts/check_bigdata_connections.py` | 容器内部服务连通性检查脚本 |
 
-## 8. 本机已验证结果
+## 9. 本机已验证结果
 
 当前电脑已完成验证：
 
@@ -122,7 +348,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\start_dev_env.ps1" -SkipChec
 | 普通连通性检查 | `15/15 checks passed` |
 | Spark 作业检查 | `16/16 checks passed` |
 
-## 9. 注意事项
+## 10. 注意事项
 
 1. 运行脚本前先启动 Docker Desktop。
 2. 不要提交 `.env`、`.docker-data`、日志文件和本地数据库数据。
