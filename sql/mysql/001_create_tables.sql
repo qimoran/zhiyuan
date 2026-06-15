@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS source_documents (
   id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
   university_id BIGINT NOT NULL COMMENT '招生单位 ID',
   year INT NULL COMMENT '招生年份或公告年份',
-  document_type VARCHAR(50) NOT NULL COMMENT '文档类型：catalog、score_line、admission_list、plan、notice、ratio',
+  document_type VARCHAR(50) NOT NULL COMMENT '文档类型：school_list、catalog、score_line、admission_list、plan、notice、ratio',
   document_title VARCHAR(300) NOT NULL COMMENT '文件或公告标题',
   source_url VARCHAR(1000) NULL COMMENT '来源页面或文件 URL',
   local_path VARCHAR(500) NULL COMMENT '本地保存路径',
