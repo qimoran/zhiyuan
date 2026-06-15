@@ -1,0 +1,63 @@
+{
+  "code": "0000",
+  "data": {
+    "total": 253,
+    "data": [
+      {
+        "spe_id": 146,
+        "year": 2022,
+        "depart_id": 27389,
+        "special_code": "095134",
+        "special_name": "渔业发展",
+        "recruit_type_name": "全日制",
+        "depart_name": "专项与联合培养",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "1.动物表型组学",
+        "exam_subject": "①101思想政治理论\n②204英语（二）\n③340农业知识综合二\n④903三农问题概论",
+        "recruit_number": 4,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 179153,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 147,
+        "year": 2022,
+        "depart_id": 27389,
+        "special_code": "095135",
+        "special_name": "食品加工与安全",
+        "recruit_type_name": "全日制",
+        "depart_name": "专项与联合培养",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "",
+        "exam_subject": "①101思想政治理论\n②204英语（二）\n③341农业知识综合三\n④903三农问题概论",
+        "recruit_number": 5,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 179167,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 148,
+        "year": 2022,
+        "depart_id": 27389,
+        "special_code": "095136",
+        "special_name": "农业工程与信息技术",
+        "recruit_type_name": "全日制",
+        "depart_name": "专项与联合培养",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "",
+        "exam_subject": "①101思想政治理论\n②204英语（二）\n③341农业知识综合三\n④903三农问题概论",
+        "recruit_number": 12,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 179155,
+        "exam_class_name": "统考",
+        "remark": ""
+      }
+    ]
+  },
+  "message": "success"
+}

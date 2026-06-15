@@ -1,0 +1,126 @@
+{
+  "code": "0000",
+  "data": {
+    "data": [
+      {
+        "code": "0713",
+        "degree_type": 2,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19186",
+        "code_name": "生态学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0803",
+        "degree_type": 2,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19187",
+        "code_name": "光学工程",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0805",
+        "degree_type": 2,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19188",
+        "code_name": "材料科学与工程",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0812",
+        "degree_type": 2,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_21198",
+        "code_name": "计算机科学与技术",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0830",
+        "degree_type": 2,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_21199",
+        "code_name": "环境科学与工程",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0854",
+        "degree_type": 1,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19189",
+        "code_name": "电子信息",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0856",
+        "degree_type": 1,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19190",
+        "code_name": "材料与化工",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0857",
+        "degree_type": 1,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_19191",
+        "code_name": "资源与环境",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0860",
+        "degree_type": 1,
+        "school_id": 1529,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中国科学院重庆绿色智能技术研究院",
+        "id": "level_rate_21200",
+        "code_name": "生物与医药",
+        "status": 1,
+        "has_doctor": 2
+      }
+    ],
+    "total": 9
+  },
+  "message": "success"
+}

@@ -1,0 +1,63 @@
+{
+  "code": "0000",
+  "data": {
+    "total": 103,
+    "data": [
+      {
+        "spe_id": 587,
+        "year": 2023,
+        "depart_id": 15780,
+        "special_code": "083100",
+        "special_name": "生物医学工程",
+        "recruit_type_name": "全日制",
+        "depart_name": "生物工程学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01生物医学工程与医疗仪器；\n02生物力学、生物材料、分子与细胞医学工程",
+        "exam_subject": "①101 思想政治理论<br/>②201英语一<br/>③301数学一<br/>④859 分子生物学； 860 传感器原理与应用<br/>",
+        "recruit_number": 26,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 937942,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 131,
+        "year": 2023,
+        "depart_id": 26603,
+        "special_code": "086000",
+        "special_name": "生物与医药",
+        "recruit_type_name": "全日制",
+        "depart_name": "药学院",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "01生物信息学与药物设计；\n02化学生物学；\n03药理学；\n04药物分析学；\n05药剂学；\n06药物化学",
+        "exam_subject": "①101 思想政治理论<br/>②204英语二<br/>③338 生物化学<br/>④ 827 有机化学<br/>",
+        "recruit_number": 27,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 937968,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 700,
+        "year": 2023,
+        "depart_id": 26603,
+        "special_code": "100700",
+        "special_name": "药学",
+        "recruit_type_name": "全日制",
+        "depart_name": "药学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01天然药物化学；\n02有机化学；\n03生物信息学与药物设计；\n04化学生物学；\n05药理学；\n06药物分析学；\n07药剂学；\n08药物化学",
+        "exam_subject": "①101 思想政治理论<br/>②201英语一<br/>③657 药学综合（自命题）<br/>",
+        "recruit_number": 37,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 937967,
+        "exam_class_name": "统考",
+        "remark": ""
+      }
+    ]
+  },
+  "message": "success"
+}

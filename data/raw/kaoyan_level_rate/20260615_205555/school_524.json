@@ -1,0 +1,126 @@
+{
+  "code": "0000",
+  "data": {
+    "data": [
+      {
+        "code": "1304",
+        "degree_type": 2,
+        "school_id": 524,
+        "rate": "A-",
+        "rate_sort": 3,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_21495",
+        "code_name": "美术学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1305",
+        "degree_type": 2,
+        "school_id": 524,
+        "rate": "B+",
+        "rate_sort": 4,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_21568",
+        "code_name": "设计学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1301",
+        "degree_type": 2,
+        "school_id": 524,
+        "rate": "C+",
+        "rate_sort": 7,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_21393",
+        "code_name": "艺术学理论",
+        "status": 1,
+        "has_doctor": 1
+      },
+      {
+        "code": "1303",
+        "degree_type": 2,
+        "school_id": 524,
+        "rate": "C",
+        "rate_sort": 8,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_21479",
+        "code_name": "戏剧与影视学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1356",
+        "degree_type": 1,
+        "school_id": 524,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_16432",
+        "code_name": "美术与书法",
+        "status": 1,
+        "has_doctor": 1
+      },
+      {
+        "code": "1403",
+        "degree_type": 2,
+        "school_id": 524,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_10703",
+        "code_name": "设计学",
+        "status": 1,
+        "has_doctor": 1
+      },
+      {
+        "code": "0862",
+        "degree_type": 1,
+        "school_id": 524,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_13410",
+        "code_name": "风景园林",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1354",
+        "degree_type": 1,
+        "school_id": 524,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_16282",
+        "code_name": "戏剧与影视",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1357",
+        "degree_type": 1,
+        "school_id": 524,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "四川美术学院",
+        "id": "level_rate_16856",
+        "code_name": "设计",
+        "status": 1,
+        "has_doctor": 2
+      }
+    ],
+    "total": 9
+  },
+  "message": "success"
+}

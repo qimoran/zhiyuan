@@ -1,0 +1,63 @@
+{
+  "code": "0000",
+  "data": {
+    "total": 103,
+    "data": [
+      {
+        "spe_id": 587,
+        "year": 2022,
+        "depart_id": 15780,
+        "special_code": "083100",
+        "special_name": "生物医学工程",
+        "recruit_type_name": "全日制",
+        "depart_name": "生物工程学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01生物医学工程与医疗仪器02生物力学、生物材料、分子与细胞医学工程",
+        "exam_subject": "①101思想政治理论②201英语（一）③301数学（一）④859分子生物学④860传感器原理与应用",
+        "recruit_number": 0,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 524844,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 131,
+        "year": 2022,
+        "depart_id": 26603,
+        "special_code": "086000",
+        "special_name": "生物与医药",
+        "recruit_type_name": "全日制",
+        "depart_name": "药学院",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "01生物信息学与药物设计02化学生物学03药理学04药物分析学05药剂学06药物化学",
+        "exam_subject": "①101思想政治理论②204英语（二）③338生物化学④827有机化学",
+        "recruit_number": 0,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 524869,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 700,
+        "year": 2022,
+        "depart_id": 26603,
+        "special_code": "100700",
+        "special_name": "药学",
+        "recruit_type_name": "全日制",
+        "depart_name": "药学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01天然药物化学02有机化学03生物信息学与药物设计04化学生物学05药理学06药物分析学07药剂学08药物化学",
+        "exam_subject": "①101思想政治理论②201英语（一）③657药学综合（自命题）",
+        "recruit_number": 0,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 524868,
+        "exam_class_name": "统考",
+        "remark": ""
+      }
+    ]
+  },
+  "message": "success"
+}

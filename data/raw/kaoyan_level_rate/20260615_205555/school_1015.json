@@ -1,0 +1,113 @@
+{
+  "code": "0000",
+  "data": {
+    "data": [
+      {
+        "code": "0101",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_5048",
+        "code_name": "哲学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0201",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_5119",
+        "code_name": "理论经济学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0302",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_5472",
+        "code_name": "政治学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0305",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_18315",
+        "code_name": "马克思主义理论",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0307",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_20532",
+        "code_name": "中共党史党建学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "0351",
+        "degree_type": 1,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_14164",
+        "code_name": "法律",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1204",
+        "degree_type": 2,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_10349",
+        "code_name": "公共管理学",
+        "status": 1,
+        "has_doctor": 2
+      },
+      {
+        "code": "1252",
+        "degree_type": 1,
+        "school_id": 1015,
+        "rate": "",
+        "rate_sort": 999,
+        "data_type": 1,
+        "school_name": "中共重庆市委党校",
+        "id": "level_rate_15202",
+        "code_name": "公共管理",
+        "status": 1,
+        "has_doctor": 2
+      }
+    ],
+    "total": 8
+  },
+  "message": "success"
+}

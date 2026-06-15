@@ -1,0 +1,81 @@
+{
+  "code": "0000",
+  "data": {
+    "total": 54,
+    "data": [
+      {
+        "spe_id": 491,
+        "year": 2022,
+        "depart_id": 27382,
+        "special_code": "081002",
+        "special_name": "信号与信息处理",
+        "recruit_type_name": "全日制",
+        "depart_name": "重庆两江人工智能学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01图像处理与机器视觉\n02多媒体信号与信息处理\n03智能系统软硬件协同设计\n04智能硬件技术与系统",
+        "exam_subject": "①101思想政治理论\n②201英语一\n③301数学一\n④810电子技术综合（含模拟电路、数字电路）",
+        "recruit_number": 4,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 178580,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 501,
+        "year": 2022,
+        "depart_id": 27382,
+        "special_code": "081203",
+        "special_name": "计算机应用技术",
+        "recruit_type_name": "全日制",
+        "depart_name": "重庆两江人工智能学院",
+        "exam_class": 1,
+        "degree_type": 2,
+        "research_area": "01机器感知与模式识别\n02大数据智能与智能信息处理\n03机器学习与机器博弈\n04智能机器人与系统",
+        "exam_subject": "①101思想政治理论\n②201英语一\n③301数学一\n④812计算机学科基础综合",
+        "recruit_number": 9,
+        "degree_type_name": "学术型硕士",
+        "plan_id": 178578,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 202,
+        "year": 2022,
+        "depart_id": 27383,
+        "special_code": "125100",
+        "special_name": "工商管理",
+        "recruit_type_name": "全日制",
+        "depart_name": "MBA教育中心",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "01会计与财务管理\n02人力资源管理\n03创业投资管理\n04知识产权与科技管理\n05战略管理",
+        "exam_subject": "①199管理类联考综合能力\n②204英语二",
+        "recruit_number": 30,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 178609,
+        "exam_class_name": "统考",
+        "remark": ""
+      },
+      {
+        "spe_id": 202,
+        "year": 2022,
+        "depart_id": 27383,
+        "special_code": "125100",
+        "special_name": "工商管理",
+        "recruit_type_name": "非全日制",
+        "depart_name": "MBA教育中心",
+        "exam_class": 1,
+        "degree_type": 1,
+        "research_area": "06会计与财务管理\n07创业投资管理\n08人力资源管理\n09知识产权与科技管理\n10房地产经营与物业管理\n11金融管理\n12物流与供应链管理\n13市场营销\n14商业模式\n15人工智能大数据管理\n16旅游与酒店管理\n17公司治理",
+        "exam_subject": "①199管理类联考综合能力\n②204英语二",
+        "recruit_number": 145,
+        "degree_type_name": "专业型硕士",
+        "plan_id": 178635,
+        "exam_class_name": "统考",
+        "remark": ""
+      }
+    ]
+  },
+  "message": "success"
+}
