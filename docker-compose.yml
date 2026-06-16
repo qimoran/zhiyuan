@@ -224,6 +224,8 @@ services:
       REDIS_PORT: 6379
       HADOOP_FS: hdfs://namenode:9000
       SPARK_MASTER: spark://spark-master:7077
+    ports:
+      - "${APP_PORT:-5000}:5000"
     volumes:
       - ./:/workspace
       - ${BIGDATA_DOCKER_DATA:-./.docker-data}:/data
