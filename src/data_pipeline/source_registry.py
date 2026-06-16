@@ -1,7 +1,8 @@
 """S04 候选库入库与来源登记。
 
-本模块优先消费 S03 V2 统一爬虫生成的 `kaoyan_v2_integrated_<batch_id>.csv`
-大合集，并按学校去重。完成三件事：
+本模块优先消费 S03 V2 统一爬虫生成的 `school_list.json`，并按学校去重。
+如果原始 JSON 不存在，则兜底读取 `kaoyan_v2_integrated_<batch_id>.csv` 大合集。
+完成三件事：
 1. 登记 `crawler_runs` 爬虫批次；
 2. 幂等写入 `universities` 候选招生单位；
 3. 为每所学校登记掌上考研候选库来源，便于后续追溯。
@@ -34,7 +35,7 @@ SCHOOL_LIST_DOCUMENT_TYPE = "school_list"
 
 @dataclass(frozen=True)
 class UniversityCandidate:
-    """掌上考研候选招生单位 CSV 中的一行标准化记录。"""
+    """掌上考研候选招生单位标准化记录。"""
 
     candidate_school_id: int
     university_name: str
@@ -46,6 +47,22 @@ class UniversityCandidate:
     recruit_number_reference: int | None
     major_number_reference: int | None
     rk_rank: str | None
+
+
+@dataclass(frozen=True)
+class SourceSelection:
+    """S04 本次使用的数据源。"""
+
+    input_type: str
+    batch_id: str
+    candidates_path: Path
+    raw_batch_dir: Path
+    csv_path: Path | None
+
+
+def school_list_json_path(batch_id: str) -> Path:
+    """返回指定批次 schoolList 聚合 JSON 路径。"""
+    return DEFAULT_RAW_ROOT / batch_id / "school_list" / "school_list.json"
 
 
 def find_latest_source_csv(
@@ -63,6 +80,18 @@ def find_latest_source_csv(
     raise FileProcessError(f"未找到 V2 统一整合 CSV：{integrated_dir}")
 
 
+def find_latest_school_list_json(raw_root: Path = DEFAULT_RAW_ROOT) -> Path:
+    """查找最新的 schoolList 聚合 JSON。"""
+    candidates = sorted(
+        raw_root.glob("*/school_list/school_list.json"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if candidates:
+        return candidates[0]
+    raise FileProcessError(f"未找到 V2 school_list.json：{raw_root}")
+
+
 def extract_batch_id(csv_path: Path) -> str:
     """从 V2 统一整合 CSV 提取批次号。"""
     stem = csv_path.stem
@@ -72,12 +101,76 @@ def extract_batch_id(csv_path: Path) -> str:
     raise ValidationError(f"候选库文件名不符合规范：{csv_path.name}")
 
 
+def extract_batch_id_from_school_list_json(json_path: Path) -> str:
+    """从 data/raw/kaoyan_v2/<batch_id>/school_list/school_list.json 提取批次号。"""
+    try:
+        return json_path.resolve().parents[1].name
+    except IndexError as exc:
+        raise ValidationError(f"school_list.json 路径不符合规范：{json_path}") from exc
+
+
 def parse_batch_datetime(batch_id: str) -> datetime | None:
     """把批次号解析为采集时间，无法解析时返回 None。"""
     try:
         return datetime.strptime(batch_id, "%Y%m%d_%H%M%S")
     except ValueError:
         return None
+
+
+def select_source(batch_id: str | None = None, csv_path: Path | None = None) -> SourceSelection:
+    """选择 S04 输入源：优先 school_list.json，兜底 CSV。"""
+    if batch_id:
+        json_path = school_list_json_path(batch_id).resolve()
+        inferred_csv = DEFAULT_INTEGRATED_DIR / f"kaoyan_v2_integrated_{batch_id}.csv"
+        if json_path.exists():
+            return SourceSelection(
+                input_type="school_list_json",
+                batch_id=batch_id,
+                candidates_path=json_path,
+                raw_batch_dir=(DEFAULT_RAW_ROOT / batch_id).resolve(),
+                csv_path=inferred_csv.resolve() if inferred_csv.exists() else None,
+            )
+        if csv_path is None and inferred_csv.exists():
+            csv_path = inferred_csv
+        if csv_path is None:
+            raise FileProcessError(
+                f"批次 {batch_id} 未找到 school_list.json，也未找到兜底 CSV："
+                f"{json_path}；{inferred_csv}"
+            )
+
+    if csv_path:
+        selected_csv = csv_path.resolve()
+        selected_batch_id = extract_batch_id(selected_csv)
+        return SourceSelection(
+            input_type="integrated_csv",
+            batch_id=selected_batch_id,
+            candidates_path=selected_csv,
+            raw_batch_dir=(DEFAULT_RAW_ROOT / selected_batch_id).resolve(),
+            csv_path=selected_csv,
+        )
+
+    try:
+        json_path = find_latest_school_list_json().resolve()
+    except FileProcessError:
+        selected_csv = find_latest_source_csv().resolve()
+        selected_batch_id = extract_batch_id(selected_csv)
+        return SourceSelection(
+            input_type="integrated_csv",
+            batch_id=selected_batch_id,
+            candidates_path=selected_csv,
+            raw_batch_dir=(DEFAULT_RAW_ROOT / selected_batch_id).resolve(),
+            csv_path=selected_csv,
+        )
+
+    selected_batch_id = extract_batch_id_from_school_list_json(json_path)
+    inferred_csv = DEFAULT_INTEGRATED_DIR / f"kaoyan_v2_integrated_{selected_batch_id}.csv"
+    return SourceSelection(
+        input_type="school_list_json",
+        batch_id=selected_batch_id,
+        candidates_path=json_path,
+        raw_batch_dir=(DEFAULT_RAW_ROOT / selected_batch_id).resolve(),
+        csv_path=inferred_csv.resolve() if inferred_csv.exists() else None,
+    )
 
 
 def read_university_candidates(csv_path: Path) -> list[UniversityCandidate]:
@@ -138,6 +231,65 @@ def read_university_candidates(csv_path: Path) -> list[UniversityCandidate]:
     return candidates
 
 
+def read_university_candidates_from_school_list_json(json_path: Path) -> list[UniversityCandidate]:
+    """读取并校验 schoolList 聚合 JSON。"""
+    if not json_path.exists():
+        raise FileProcessError(f"schoolList 聚合 JSON 不存在：{json_path}")
+
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    items = payload.get("items")
+    if not isinstance(items, list):
+        raise ValidationError(f"schoolList 聚合 JSON 缺少 items 数组：{json_path}")
+
+    candidates: list[UniversityCandidate] = []
+    school_id_to_name: dict[int, str] = {}
+    name_to_school_id: dict[str, int] = {}
+
+    for index, row in enumerate(items, start=1):
+        if not isinstance(row, dict):
+            raise ValidationError(f"schoolList 第 {index} 条不是对象")
+        school_id = _to_int(row.get("school_id"))
+        school_name = _clean_text(row.get("school_name"))
+        if school_id is None:
+            raise ValidationError(f"schoolList 第 {index} 条缺少合法 school_id")
+        if not school_name:
+            raise ValidationError(f"schoolList 第 {index} 条缺少 school_name")
+        if school_id in school_id_to_name:
+            if school_id_to_name[school_id] != school_name:
+                raise ValidationError(f"schoolList 中 school_id={school_id} 对应多个学校名称")
+            continue
+        if school_name in name_to_school_id:
+            raise ValidationError(f"schoolList 中学校名称对应多个 school_id：{school_name}")
+
+        school_id_to_name[school_id] = school_name
+        name_to_school_id[school_name] = school_id
+        candidates.append(
+            UniversityCandidate(
+                candidate_school_id=school_id,
+                university_name=school_name,
+                province=_clean_text(row.get("province_name")) or "重庆",
+                province_area=_normalize_province_area(row.get("province_area")),
+                school_type=_clean_text(row.get("type_name")),
+                school_org_type=_clean_text(row.get("type_school_name")),
+                school_level=_school_level_from_raw(row),
+                recruit_number_reference=_to_int(row.get("recruit_number")),
+                major_number_reference=_to_int(row.get("major_number")),
+                rk_rank=_clean_text(row.get("rk_rank")),
+            )
+        )
+
+    if not candidates:
+        raise ValidationError(f"schoolList 聚合 JSON 为空：{json_path}")
+    return candidates
+
+
+def read_candidates_from_selection(selection: SourceSelection) -> list[UniversityCandidate]:
+    """按选择的数据源读取候选学校。"""
+    if selection.input_type == "school_list_json":
+        return read_university_candidates_from_school_list_json(selection.candidates_path)
+    return read_university_candidates(selection.candidates_path)
+
+
 def build_coverage_priority(candidate: UniversityCandidate) -> str:
     """根据学校层次给第一版覆盖优先级赋初值。"""
     level = candidate.school_level or ""
@@ -155,8 +307,9 @@ def save_crawler_run(
     *,
     batch_id: str,
     raw_output_path: Path,
-    parsed_output_path: Path,
+    parsed_output_path: Path | None,
     fetched_count: int,
+    input_type: str,
 ) -> int:
     """写入 crawler_runs，并返回主键 ID。"""
     request_params = {
@@ -165,6 +318,7 @@ def save_crawler_run(
         "page": "auto",
         "limit": "auto",
         "batch_id": batch_id,
+        "input_type": input_type,
     }
     started_at = parse_batch_datetime(batch_id)
     with connection.cursor() as cursor:
@@ -187,7 +341,7 @@ def save_crawler_run(
                 "api_url": UNIFIED_API_URL,
                 "request_params_json": json.dumps(request_params, ensure_ascii=False),
                 "raw_output_path": _project_relative(raw_output_path),
-                "parsed_output_path": _project_relative(parsed_output_path),
+                "parsed_output_path": _project_relative(parsed_output_path) if parsed_output_path else None,
                 "status": "success",
                 "total_count": fetched_count,
                 "fetched_count": fetched_count,
@@ -271,33 +425,56 @@ def register_source_document(
     collector: str,
     remark: str,
 ) -> int:
-    """登记来源资料，按同一学校、类型、标题、URL、路径去重。"""
+    """登记来源资料。
+
+    school_list 候选来源按学校、类型、标题保持一条当前记录，重复跑样本/全量时更新路径。
+    其他资料仍按学校、类型、标题、URL、路径去重。
+    """
     with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT id
-            FROM source_documents
-            WHERE university_id = %(university_id)s
-              AND document_type = %(document_type)s
-              AND document_title = %(document_title)s
-              AND COALESCE(source_url, '') = COALESCE(%(source_url)s, '')
-              AND COALESCE(local_path, '') = COALESCE(%(local_path)s, '')
-            LIMIT 1
-            """,
-            {
-                "university_id": university_id,
-                "document_type": document_type,
-                "document_title": document_title,
-                "source_url": source_url,
-                "local_path": local_path,
-            },
-        )
+        if document_type == SCHOOL_LIST_DOCUMENT_TYPE:
+            cursor.execute(
+                """
+                SELECT id
+                FROM source_documents
+                WHERE university_id = %(university_id)s
+                  AND document_type = %(document_type)s
+                  AND document_title = %(document_title)s
+                LIMIT 1
+                """,
+                {
+                    "university_id": university_id,
+                    "document_type": document_type,
+                    "document_title": document_title,
+                },
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT id
+                FROM source_documents
+                WHERE university_id = %(university_id)s
+                  AND document_type = %(document_type)s
+                  AND document_title = %(document_title)s
+                  AND COALESCE(source_url, '') = COALESCE(%(source_url)s, '')
+                  AND COALESCE(local_path, '') = COALESCE(%(local_path)s, '')
+                LIMIT 1
+                """,
+                {
+                    "university_id": university_id,
+                    "document_type": document_type,
+                    "document_title": document_title,
+                    "source_url": source_url,
+                    "local_path": local_path,
+                },
+            )
         existing = cursor.fetchone()
         if existing:
             cursor.execute(
                 """
                 UPDATE source_documents
                 SET collector = %(collector)s,
+                    source_url = %(source_url)s,
+                    local_path = %(local_path)s,
                     process_status = 'loaded',
                     official_verified = 0,
                     remark = %(remark)s,
@@ -306,6 +483,8 @@ def register_source_document(
                 """,
                 {
                     "id": existing["id"],
+                    "source_url": source_url,
+                    "local_path": local_path,
                     "collector": collector,
                     "remark": remark,
                 },
@@ -357,12 +536,12 @@ def register_candidate_sources(
     connection,
     candidates: list[UniversityCandidate],
     *,
-    parsed_output_path: Path,
+    source_path: Path,
     collector: str,
 ) -> int:
     """为每所学校登记一条掌上考研候选库来源记录。"""
     registered = 0
-    local_path = _project_relative(parsed_output_path)
+    local_path = _project_relative(source_path)
     school_ids = [candidate.candidate_school_id for candidate in candidates]
     placeholders = ", ".join(["%s"] * len(school_ids))
     sql = f"""
@@ -400,23 +579,32 @@ def register_candidate_sources(
 def run_registry(
     csv_path: Path | None = None,
     *,
+    batch_id: str | None = None,
     raw_dir: Path | None = None,
     collector: str = "S04",
     dry_run: bool = False,
 ) -> dict[str, Any]:
     """执行 S04 候选库入库与来源登记。"""
-    selected_csv = csv_path or find_latest_source_csv()
-    selected_csv = selected_csv.resolve()
-    batch_id = extract_batch_id(selected_csv)
-    selected_raw_dir = (raw_dir or DEFAULT_RAW_ROOT / batch_id).resolve()
-    candidates = read_university_candidates(selected_csv)
-    candidate_crawled_at = parse_batch_datetime(batch_id)
+    selection = select_source(batch_id=batch_id, csv_path=csv_path)
+    selected_raw_dir = (raw_dir or selection.raw_batch_dir).resolve()
+    candidates = read_candidates_from_selection(selection)
+    candidate_crawled_at = parse_batch_datetime(selection.batch_id)
 
     summary: dict[str, Any] = {
-        "batch_id": batch_id,
-        "csv_path": _project_relative(selected_csv),
+        "batch_id": selection.batch_id,
+        "input_type": selection.input_type,
+        "candidate_source_path": _project_relative(selection.candidates_path),
+        "csv_path": _project_relative(selection.csv_path) if selection.csv_path else None,
+        "csv_exists": bool(selection.csv_path and selection.csv_path.exists()),
         "raw_output_path": _project_relative(selected_raw_dir),
         "candidate_count": len(candidates),
+        "candidate_schools": [
+            {
+                "school_id": candidate.candidate_school_id,
+                "school_name": candidate.university_name,
+            }
+            for candidate in candidates
+        ],
         "dry_run": dry_run,
     }
 
@@ -435,10 +623,11 @@ def run_registry(
         try:
             crawler_run_id = save_crawler_run(
                 connection,
-                batch_id=batch_id,
+                batch_id=selection.batch_id,
                 raw_output_path=selected_raw_dir,
-                parsed_output_path=selected_csv,
+                parsed_output_path=selection.csv_path,
                 fetched_count=len(candidates),
+                input_type=selection.input_type,
             )
             affected_rows = upsert_university_candidates(
                 connection,
@@ -449,7 +638,7 @@ def run_registry(
             source_count = register_candidate_sources(
                 connection,
                 candidates,
-                parsed_output_path=selected_csv,
+                source_path=selection.candidates_path,
                 collector=collector,
             )
             connection.commit()
@@ -472,11 +661,16 @@ def run_registry(
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="S04 候选库入库与来源登记")
     parser.add_argument(
+        "--batch-id",
+        default=None,
+        help="V2 爬虫批次号；优先读取 data/raw/kaoyan_v2/<batch_id>/school_list/school_list.json",
+    )
+    parser.add_argument(
         "--csv",
         dest="csv_path",
         type=Path,
         default=None,
-        help="候选库 CSV 路径；默认优先读取 data/processed/kaoyan_v2_integrated 下最新统一 CSV",
+        help="候选库 CSV 路径；当 batch_id 对应 JSON 不存在时作为兜底输入",
     )
     parser.add_argument(
         "--raw-dir",
@@ -493,7 +687,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="只读取和校验 CSV，不写入数据库",
+        help="只读取和校验输入源，不写入数据库",
     )
     return parser
 
@@ -504,6 +698,7 @@ def main() -> None:
     set_trace_id("s04-source-registry")
     summary = run_registry(
         args.csv_path,
+        batch_id=args.batch_id,
         raw_dir=args.raw_dir,
         collector=args.collector,
         dry_run=args.dry_run,
@@ -535,6 +730,20 @@ def _normalize_province_area(value: Any) -> str:
     if text in {"B", "B区"}:
         return "B区"
     return text or "A区"
+
+
+def _school_level_from_raw(row: dict[str, Any]) -> str:
+    """按掌上考研 schoolList 标志位生成学校层次。"""
+    levels: list[str] = []
+    if _to_int(row.get("is_985")) == 1:
+        levels.append("985")
+    if _to_int(row.get("is_211")) == 1:
+        levels.append("211")
+    if _to_int(row.get("syl")) == 1:
+        levels.append("双一流")
+    if _to_int(row.get("is_zihuaxian")) == 1:
+        levels.append("自划线")
+    return " / ".join(levels) if levels else "普通院校"
 
 
 def _project_relative(path: Path) -> str:
