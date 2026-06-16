@@ -12,6 +12,7 @@ venv/
 env/
 logs/*.log
 logs/**/*.log
+data/*
 
 # Docker 本地运行数据
 .docker-data

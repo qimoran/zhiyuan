@@ -1,6 +1,7 @@
 """S04 候选库入库与来源登记。
 
-本模块消费 S03 生成的 `university_candidates_<batch_id>.csv`，完成三件事：
+本模块优先消费 S03 V2 统一爬虫生成的 `kaoyan_v2_integrated_<batch_id>.csv`
+大合集，并按学校去重。完成三件事：
 1. 登记 `crawler_runs` 爬虫批次；
 2. 幂等写入 `universities` 候选招生单位；
 3. 为每所学校登记掌上考研候选库来源，便于后续追溯。
@@ -25,9 +26,9 @@ from src.common.trace import set_trace_id
 logger = get_logger("etl")
 
 TARGET_URL = "https://www.kaoyan.cn/school-list/50-0-0"
-API_URL = "https://api.kaoyan.cn/pc/school/schoolList"
-DEFAULT_PROCESSED_DIR = PROJECT_ROOT / "data" / "processed" / "universities"
-DEFAULT_RAW_ROOT = PROJECT_ROOT / "data" / "raw" / "kaoyan_school_list"
+UNIFIED_API_URL = "https://api.kaoyan.cn/pc/school/schoolList,/pc/school/planListV2,/pc/school/planDetailV2,/pc/school/schoolScore,/pc/school/schoolLevelRate"
+DEFAULT_INTEGRATED_DIR = PROJECT_ROOT / "data" / "processed" / "kaoyan_v2_integrated"
+DEFAULT_RAW_ROOT = PROJECT_ROOT / "data" / "raw" / "kaoyan_v2"
 SCHOOL_LIST_DOCUMENT_TYPE = "school_list"
 
 
@@ -47,25 +48,28 @@ class UniversityCandidate:
     rk_rank: str | None
 
 
-def find_latest_university_candidates_csv(directory: Path = DEFAULT_PROCESSED_DIR) -> Path:
-    """查找最新的候选库 CSV。"""
-    candidates = sorted(
-        directory.glob("university_candidates_*.csv"),
+def find_latest_source_csv(
+    integrated_dir: Path = DEFAULT_INTEGRATED_DIR,
+) -> Path:
+    """查找最新 V2 统一整合 CSV。"""
+    integrated_candidates = sorted(
+        integrated_dir.glob("kaoyan_v2_integrated_*.csv"),
         key=lambda path: path.stat().st_mtime,
         reverse=True,
     )
-    if not candidates:
-        raise FileProcessError(f"未找到候选库 CSV：{directory}")
-    return candidates[0]
+    if integrated_candidates:
+        return integrated_candidates[0]
+
+    raise FileProcessError(f"未找到 V2 统一整合 CSV：{integrated_dir}")
 
 
 def extract_batch_id(csv_path: Path) -> str:
-    """从 `university_candidates_<batch_id>.csv` 提取批次号。"""
+    """从 V2 统一整合 CSV 提取批次号。"""
     stem = csv_path.stem
-    prefix = "university_candidates_"
-    if not stem.startswith(prefix):
-        raise ValidationError(f"候选库文件名不符合规范：{csv_path.name}")
-    return stem[len(prefix) :]
+    prefix = "kaoyan_v2_integrated_"
+    if stem.startswith(prefix):
+        return stem[len(prefix) :]
+    raise ValidationError(f"候选库文件名不符合规范：{csv_path.name}")
 
 
 def parse_batch_datetime(batch_id: str) -> datetime | None:
@@ -77,16 +81,23 @@ def parse_batch_datetime(batch_id: str) -> datetime | None:
 
 
 def read_university_candidates(csv_path: Path) -> list[UniversityCandidate]:
-    """读取并校验候选库 CSV。"""
+    """读取并校验候选学校。
+
+    V2 大合集 CSV 按 `school_id + school_name` 去重得到候选学校。
+    """
     if not csv_path.exists():
         raise FileProcessError(f"候选库 CSV 不存在：{csv_path}")
 
     candidates: list[UniversityCandidate] = []
-    seen_school_ids: set[int] = set()
-    seen_names: set[str] = set()
+    school_id_to_name: dict[int, str] = {}
+    name_to_school_id: dict[str, int] = {}
 
     with csv_path.open("r", encoding="utf-8-sig", newline="") as file:
         reader = csv.DictReader(file)
+        fieldnames = set(reader.fieldnames or [])
+        if "school_id" not in fieldnames or "school_name" not in fieldnames:
+            raise ValidationError(f"V2 大合集 CSV 缺少 school_id 或 school_name 字段：{csv_path}")
+
         for line_no, row in enumerate(reader, start=2):
             school_id = _to_int(row.get("school_id"))
             school_name = _clean_text(row.get("school_name"))
@@ -94,13 +105,15 @@ def read_university_candidates(csv_path: Path) -> list[UniversityCandidate]:
                 raise ValidationError(f"第 {line_no} 行缺少合法 school_id")
             if not school_name:
                 raise ValidationError(f"第 {line_no} 行缺少 school_name")
-            if school_id in seen_school_ids:
-                raise ValidationError(f"候选库 CSV 中 school_id 重复：{school_id}")
-            if school_name in seen_names:
-                raise ValidationError(f"候选库 CSV 中学校名称重复：{school_name}")
+            if school_id in school_id_to_name:
+                if school_id_to_name[school_id] != school_name:
+                    raise ValidationError(f"候选库 CSV 中 school_id={school_id} 对应多个学校名称")
+                continue
+            if school_name in name_to_school_id:
+                raise ValidationError(f"候选库 CSV 中学校名称对应多个 school_id：{school_name}")
 
-            seen_school_ids.add(school_id)
-            seen_names.add(school_name)
+            school_id_to_name[school_id] = school_name
+            name_to_school_id[school_name] = school_id
 
             candidates.append(
                 UniversityCandidate(
@@ -111,9 +124,11 @@ def read_university_candidates(csv_path: Path) -> list[UniversityCandidate]:
                     school_type=_clean_text(row.get("type_name")),
                     school_org_type=_clean_text(row.get("type_school_name")),
                     school_level=_clean_text(row.get("school_level")),
-                    recruit_number_reference=_to_int(row.get("recruit_number_int"))
+                    recruit_number_reference=_to_int(row.get("school_recruit_number_reference"))
+                    or _to_int(row.get("recruit_number_int"))
                     or _to_int(row.get("recruit_number")),
-                    major_number_reference=_to_int(row.get("major_number")),
+                    major_number_reference=_to_int(row.get("school_major_number_reference"))
+                    or _to_int(row.get("major_number")),
                     rk_rank=_clean_text(row.get("rk_rank")),
                 )
             )
@@ -146,8 +161,9 @@ def save_crawler_run(
     """写入 crawler_runs，并返回主键 ID。"""
     request_params = {
         "province_id": 50,
+        "years": [2024, 2025, 2026],
         "page": "auto",
-        "limit": 20,
+        "limit": "auto",
         "batch_id": batch_id,
     }
     started_at = parse_batch_datetime(batch_id)
@@ -166,9 +182,9 @@ def save_crawler_run(
             )
             """,
             {
-                "crawler_name": "kaoyan_school_list",
+                "crawler_name": "kaoyan_v2",
                 "target_url": TARGET_URL,
-                "api_url": API_URL,
+                "api_url": UNIFIED_API_URL,
                 "request_params_json": json.dumps(request_params, ensure_ascii=False),
                 "raw_output_path": _project_relative(raw_output_path),
                 "parsed_output_path": _project_relative(parsed_output_path),
@@ -389,7 +405,7 @@ def run_registry(
     dry_run: bool = False,
 ) -> dict[str, Any]:
     """执行 S04 候选库入库与来源登记。"""
-    selected_csv = csv_path or find_latest_university_candidates_csv()
+    selected_csv = csv_path or find_latest_source_csv()
     selected_csv = selected_csv.resolve()
     batch_id = extract_batch_id(selected_csv)
     selected_raw_dir = (raw_dir or DEFAULT_RAW_ROOT / batch_id).resolve()
@@ -460,7 +476,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         dest="csv_path",
         type=Path,
         default=None,
-        help="候选库 CSV 路径；默认读取 data/processed/universities 下最新文件",
+        help="候选库 CSV 路径；默认优先读取 data/processed/kaoyan_v2_integrated 下最新统一 CSV",
     )
     parser.add_argument(
         "--raw-dir",
