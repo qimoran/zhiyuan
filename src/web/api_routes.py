@@ -13,6 +13,7 @@ from src.services.query_service import (
     list_sources,
     list_universities,
 )
+from src.services.recommendation_service import recommend
 from src.services.score_service import evaluate_score
 from src.services.metadata_service import (
     list_major_categories,
@@ -371,6 +372,14 @@ def score_evaluate():
     """
     payload = request.get_json(silent=True) or {}
     data = evaluate_score(payload)
+    return jsonify(success_response(data))
+
+
+@api_bp.post("/recommend")
+def recommend_api():
+    """考研择校推荐接口（S10）。"""
+    payload = request.get_json(silent=True) or {}
+    data = recommend(payload)
     return jsonify(success_response(data))
 
 
