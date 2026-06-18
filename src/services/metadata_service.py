@@ -5,10 +5,51 @@
 
 from __future__ import annotations
 
+import re
+from typing import Any
+
 from src.common.database import fetch_all
+from src.common.exceptions import ValidationError
+
+_CJK_PATTERN = re.compile(r"[\u4e00-\u9fff]")
 
 
-def list_major_categories() -> dict[str, list[str]]:
+def _parse_school_id(value: Any) -> int:
+    try:
+        school_id = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValidationError("school_id 必须是正整数") from exc
+    if school_id <= 0:
+        raise ValidationError("school_id 必须是正整数")
+    return school_id
+
+
+def _is_readable_major_category(value: str | None) -> bool:
+    """过滤数据库里混入的乱码专业门类。"""
+    if not value:
+        return False
+
+    text = value.strip()
+    if not text or not _CJK_PATTERN.search(text):
+        return False
+
+    # 常见的 UTF-8 被按 latin1/GBK 误解码后会出现这些字符区间。
+    if "\ufffd" in text or any("\u00a0" <= char <= "\u00ff" for char in text):
+        return False
+
+    return True
+
+
+def _clean_major_categories(rows: list[dict[str, str]]) -> list[str]:
+    categories = {
+        row["major_category"].strip()
+        for row in rows
+        if _is_readable_major_category(row.get("major_category"))
+    }
+    return sorted(categories)
+
+
+def list_major_categories(filters: dict[str, Any] | None = None) -> dict[str, list[str]]:
     """查询所有专业门类列表。
 
     Returns:
@@ -18,6 +59,28 @@ def list_major_categories() -> dict[str, list[str]]:
             "from_national_lines": [...] # 从国家线提取的专业门类
         }
     """
+    filters = filters or {}
+    if filters.get("school_id"):
+        school_id = _parse_school_id(filters["school_id"])
+        majors_categories = fetch_all(
+            """
+            SELECT DISTINCT m.major_category
+            FROM majors m
+            JOIN universities u ON u.id = m.university_id
+            WHERE m.major_category IS NOT NULL
+              AND u.candidate_school_id = %(school_id)s
+            ORDER BY m.major_category
+            """,
+            {"school_id": school_id},
+        )
+        from_majors = _clean_major_categories(majors_categories)
+        return {
+            "from_majors": from_majors,
+            "from_score_lines": [],
+            "from_national_lines": [],
+            "combined": from_majors,
+        }
+
     # 从 majors 表获取专业门类
     majors_categories = fetch_all(
         """
@@ -50,15 +113,15 @@ def list_major_categories() -> dict[str, list[str]]:
         """
     )
 
+    from_majors = _clean_major_categories(majors_categories)
+    from_score_lines = _clean_major_categories(score_categories)
+    from_national_lines = _clean_major_categories(national_categories)
+
     return {
-        "from_majors": [row['major_category'] for row in majors_categories],
-        "from_score_lines": [row['major_category'] for row in score_categories],
-        "from_national_lines": [row['major_category'] for row in national_categories],
-        "combined": sorted(set(
-            [row['major_category'] for row in majors_categories] +
-            [row['major_category'] for row in score_categories] +
-            [row['major_category'] for row in national_categories]
-        ))
+        "from_majors": from_majors,
+        "from_score_lines": from_score_lines,
+        "from_national_lines": from_national_lines,
+        "combined": sorted(set(from_majors + from_score_lines + from_national_lines)),
     }
 
 

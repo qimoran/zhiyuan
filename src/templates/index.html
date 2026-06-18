@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="home-hero">
+  <div class="hero-orb hero-orb-top"></div>
+  <div class="hero-orb hero-orb-bottom"></div>
+  <div class="page-shell home-hero-inner">
+    <div class="hero-pill">2026 年考研择校助手</div>
+    <h1>智能分析，精准择校</h1>
+    <p>输入你的分数，系统自动匹配冲刺、稳妥、保底三档院校，结合真实招生专业、分数线和学校数据辅助决策。</p>
+    <a class="btn btn-light btn-hero" href="/recommend">立即开始推荐</a>
+  </div>
+</section>
+
+<section class="home-stats">
+  <div class="page-shell home-stat-grid" data-health-stats>
+    <article class="home-stat-card">
+      <span class="stat-icon">校</span>
+      <strong data-stat="universities">加载中</strong>
+      <p>重庆研招单位</p>
+    </article>
+    <article class="home-stat-card">
+      <span class="stat-icon">专</span>
+      <strong data-stat="majors">加载中</strong>
+      <p>专业方向</p>
+    </article>
+    <article class="home-stat-card">
+      <span class="stat-icon">线</span>
+      <strong data-stat="score_lines">加载中</strong>
+      <p>分数线记录</p>
+    </article>
+  </div>
+</section>
+
+<section class="page-shell how-section">
+  <div class="section-heading">
+    <h2>三步获取推荐</h2>
+    <p>填写成绩，匹配历史数据，输出分档择校建议。</p>
+  </div>
+  <div class="how-grid">
+    <article class="how-card">
+      <span>01</span>
+      <h3>填写成绩</h3>
+      <p>选择年份、专业、学位类型和学习方式，输入总分及四门单科成绩。</p>
+    </article>
+    <article class="how-card">
+      <span>02</span>
+      <h3>智能分析</h3>
+      <p>系统从 MySQL 查询真实学校、专业和分数线数据，完成候选匹配。</p>
+    </article>
+    <article class="how-card">
+      <span>03</span>
+      <h3>获取推荐</h3>
+      <p>按冲刺、稳妥、保底三档展示推荐结果，并保留风险提示和推荐理由。</p>
+    </article>
+  </div>
+</section>
+
+<section class="home-cta">
+  <h2>准备好开始了吗？</h2>
+  <p data-data-range>正在读取数据库统计...</p>
+  <a class="btn btn-light" href="/recommend">开始择校</a>
+</section>
+
+<footer class="footer-band">
+  <div class="page-shell" data-footer-stats>正在读取数据库统计...</div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
+{% endblock %}

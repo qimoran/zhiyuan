@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell list-page">
+  <div class="page-title-row">
+    <div>
+      <h1>学校列表</h1>
+      <p data-university-title-count>正在读取重庆地区研招单位候选库。</p>
+    </div>
+    <a class="btn btn-primary" href="/recommend">开始推荐</a>
+  </div>
+  <section class="filter-bar">
+    <label class="field">
+      <span>关键词搜索</span>
+      <input type="search" data-university-keyword placeholder="输入学校名称">
+    </label>
+    <div>
+      <span class="field-label">学校层次</span>
+      <div class="choice-row" data-university-levels></div>
+    </div>
+  </section>
+  <div class="list-meta" data-university-meta></div>
+  <section class="university-grid" data-university-grid></section>
+  <div class="empty-state" data-university-empty hidden>没有匹配的学校，请调整筛选条件。</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/universities.js') }}" defer></script>
+{% endblock %}

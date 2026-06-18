@@ -87,7 +87,6 @@ def evaluate_score(payload: dict[str, Any]) -> dict[str, Any]:
 
 def parse_score_input(payload: dict[str, Any]) -> ScoreInput:
     target_year = parse_int(payload.get("target_year"), "target_year", minimum=2000, maximum=2100)
-    total_score = parse_int(payload.get("total_score"), "total_score", minimum=0, maximum=500)
     major_category = clean_optional_text(payload.get("major_category"))
     major_name = clean_optional_text(payload.get("major_name"))
     university_id = parse_optional_int(payload.get("university_id"), "university_id", minimum=1)
@@ -96,9 +95,21 @@ def parse_score_input(payload: dict[str, Any]) -> ScoreInput:
     major_code = clean_optional_text(payload.get("major_code"))
     degree_type = clean_optional_text(payload.get("degree_type"))
     study_mode = clean_optional_text(payload.get("study_mode"))
+    politics_score = parse_optional_score(payload.get("politics_score"), "politics_score")
+    english_score = parse_optional_score(payload.get("english_score"), "english_score")
+    subject_one_score = parse_optional_score(payload.get("subject_one_score"), "subject_one_score")
+    subject_two_score = parse_optional_score(payload.get("subject_two_score"), "subject_two_score")
+    total_score = parse_optional_int(payload.get("total_score"), "total_score", minimum=0, maximum=500)
 
     if not any([major_category, major_name, major_id, major_code]):
         raise ValidationError("major_category、major_name、major_id、major_code 至少填写一个")
+    if total_score is None:
+        subject_scores = [politics_score, english_score, subject_one_score, subject_two_score]
+        if any(score is None for score in subject_scores):
+            raise ValidationError("total_score 缺失时必须填写四门单科成绩")
+        total_score = sum(score for score in subject_scores if score is not None)
+        if total_score > 500:
+            raise ValidationError("四门单科成绩合计不能大于 500")
 
     return ScoreInput(
         target_year=target_year,
@@ -111,10 +122,10 @@ def parse_score_input(payload: dict[str, Any]) -> ScoreInput:
         major_code=major_code,
         degree_type=degree_type,
         study_mode=study_mode,
-        politics_score=parse_optional_score(payload.get("politics_score"), "politics_score"),
-        english_score=parse_optional_score(payload.get("english_score"), "english_score"),
-        subject_one_score=parse_optional_score(payload.get("subject_one_score"), "subject_one_score"),
-        subject_two_score=parse_optional_score(payload.get("subject_two_score"), "subject_two_score"),
+        politics_score=politics_score,
+        english_score=english_score,
+        subject_one_score=subject_one_score,
+        subject_two_score=subject_two_score,
     )
 
 
@@ -314,10 +325,15 @@ def parse_optional_score(value: Any, field_name: str) -> int | None:
     return parse_int(value, field_name, minimum=0, maximum=150)
 
 
-def parse_optional_int(value: Any, field_name: str, minimum: int | None = None) -> int | None:
+def parse_optional_int(
+    value: Any,
+    field_name: str,
+    minimum: int | None = None,
+    maximum: int | None = None,
+) -> int | None:
     if value is None or value == "":
         return None
-    return parse_int(value, field_name, minimum=minimum)
+    return parse_int(value, field_name, minimum=minimum, maximum=maximum)
 
 
 def parse_int(

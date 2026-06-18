@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }} - 考研择校推荐系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">考研择校推荐</a>
+    <button class="nav-toggle" type="button" aria-label="打开导航" data-nav-toggle>☰</button>
+    <nav class="site-nav" data-site-nav>
+      <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="/">首页</a>
+      <a class="nav-link {{ 'active' if active_page == 'universities' else '' }}" href="/universities">学校列表</a>
+      <a class="nav-link {{ 'active' if active_page == 'majors' else '' }}" href="/majors">专业列表</a>
+      <a class="nav-link nav-link-primary {{ 'active' if active_page == 'recommend' else '' }}" href="/recommend">开始推荐</a>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+
+  <script src="{{ url_for('static', filename='js/api.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -427,7 +427,7 @@ def metadata_major_categories():
           }
         }
     """
-    data = list_major_categories()
+    data = list_major_categories(request.args.to_dict())
     return jsonify(success_response(data))
 
 

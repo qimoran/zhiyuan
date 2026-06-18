@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell list-page">
+  <div class="page-title-row">
+    <div>
+      <h1>专业列表</h1>
+      <p>按学校、专业门类、学位类型和学习方式筛选专业方向。</p>
+    </div>
+    <a class="btn btn-primary" href="/recommend">用该专业推荐</a>
+  </div>
+  <section class="filter-bar major-filter">
+    <label class="field">
+      <span>学校</span>
+      <select data-major-school></select>
+    </label>
+    <label class="field">
+      <span>专业门类</span>
+      <select data-major-category></select>
+    </label>
+    <label class="field">
+      <span>关键词</span>
+      <input type="search" data-major-keyword placeholder="专业名或研究方向">
+    </label>
+    <label class="field">
+      <span>学位类型</span>
+      <select data-major-degree></select>
+    </label>
+    <label class="field">
+      <span>学习方式</span>
+      <select data-major-study></select>
+    </label>
+  </section>
+  <div class="table-toolbar">
+    <span data-major-meta>正在加载专业数据...</span>
+    <button class="btn btn-secondary btn-small" type="button" data-major-reset>重置筛选</button>
+  </div>
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th data-sort="university_name">学校</th>
+          <th data-sort="department_name">学院</th>
+          <th data-sort="major_name">专业名</th>
+          <th data-sort="degree_type">学位类型</th>
+          <th data-sort="study_mode">学习方式</th>
+          <th data-sort="research_direction">研究方向</th>
+        </tr>
+      </thead>
+      <tbody data-major-table></tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <button class="btn btn-secondary btn-small" type="button" data-major-prev>上一页</button>
+    <span data-major-page>1 / 1</span>
+    <button class="btn btn-secondary btn-small" type="button" data-major-next>下一页</button>
+  </div>
+  <div class="empty-state" data-major-empty hidden>没有匹配的专业，请调整筛选条件。</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/majors.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell placeholder-page">
+  <div class="page-title-row">
+    <div>
+      <h1>推荐报告</h1>
+      <p>S14 报告接口接入前，当前页面展示最近一次推荐摘要。</p>
+    </div>
+    <a class="btn btn-primary" href="/recommend">重新推荐</a>
+  </div>
+  <section class="report-summary" data-report-summary></section>
+  <article class="notice-box">
+    这里暂不调用不存在的 PDF 或 AI 报告接口。后续 S14 完成后，可把当前推荐结果传给报告接口生成正式报告。
+  </article>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/report.js') }}" defer></script>
+{% endblock %}

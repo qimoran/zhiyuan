@@ -1,0 +1,56 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "研 考研择校推荐" [ref=e3] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e4]:
+      - link "首页" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - link "学校列表" [ref=e6] [cursor=pointer]:
+        - /url: /universities
+      - link "专业列表" [ref=e7] [cursor=pointer]:
+        - /url: /majors
+      - link "开始推荐 →" [ref=e8] [cursor=pointer]:
+        - /url: /recommend
+  - main [ref=e9]:
+    - generic [ref=e13]:
+      - generic [ref=e14]: 2026 年考研择校助手
+      - heading "智能分析，精准择校" [level=1] [ref=e15]
+      - paragraph [ref=e16]: 输入你的分数，系统自动匹配冲刺、稳妥、保底三档院校，结合真实招生专业、分数线和学校数据辅助决策。
+      - link "立即开始推荐 ›" [ref=e17] [cursor=pointer]:
+        - /url: /recommend
+    - generic [ref=e19]:
+      - article [ref=e20]:
+        - generic [ref=e21]: 校
+        - strong [ref=e22]: 21 所
+        - paragraph [ref=e23]: 重庆研招单位
+      - article [ref=e24]:
+        - generic [ref=e25]: 专
+        - strong [ref=e26]: 5,652 个
+        - paragraph [ref=e27]: 专业方向
+      - article [ref=e28]:
+        - generic [ref=e29]: 线
+        - strong [ref=e30]: 6,852 条
+        - paragraph [ref=e31]: 分数线记录
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "三步获取推荐" [level=2] [ref=e34]
+        - paragraph [ref=e35]: 填写成绩，匹配历史数据，输出分档择校建议。
+      - generic [ref=e36]:
+        - article [ref=e37]:
+          - generic [ref=e38]: "01"
+          - heading "填写成绩" [level=3] [ref=e39]
+          - paragraph [ref=e40]: 选择年份、专业、学位类型和学习方式，输入总分及四门单科成绩。
+        - article [ref=e41]:
+          - generic [ref=e42]: "02"
+          - heading "智能分析" [level=3] [ref=e43]
+          - paragraph [ref=e44]: 系统从 MySQL 查询真实学校、专业和分数线数据，完成候选匹配。
+        - article [ref=e45]:
+          - generic [ref=e46]: "03"
+          - heading "获取推荐" [level=3] [ref=e47]
+          - paragraph [ref=e48]: 按冲刺、稳妥、保底三档展示推荐结果，并保留风险提示和推荐理由。
+    - generic [ref=e49]:
+      - heading "准备好开始了吗？" [level=2] [ref=e50]
+      - paragraph [ref=e51]: 当前数据库覆盖 2024-2026 年数据，包含 10,035 条招生计划。
+      - link "开始择校" [ref=e52] [cursor=pointer]:
+        - /url: /recommend
+    - generic [ref=e54]: 数据库统计：学校 21 所 / 专业方向 5,652 个 / 分数线 6,852 条 / 数据年份 2024-2026

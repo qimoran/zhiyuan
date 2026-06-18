@@ -131,20 +131,23 @@ FLUSH PRIVILEGES;
     }
 }
 
-function Test-ContainerTcp {
+function Test-LocalTcp {
     param(
         [string]$HostName,
-        [int]$Port
+        [int]$Port,
+        [int]$TimeoutSeconds = 2
     )
 
-    $pythonCode = "import socket,sys; sock=socket.socket(); sock.settimeout(2); code=sock.connect_ex(('$HostName',$Port)); sock.close(); sys.exit(0 if code == 0 else 1)"
-
-    $dockerArgs = @("compose") + $ComposeProfiles + @(
-        "exec", "-T", "python",
-        "python", "-c", $pythonCode
-    )
-    & docker @dockerArgs *> $null
-    return $LASTEXITCODE -eq 0
+    try {
+        $socket = New-Object System.Net.Sockets.TcpClient
+        $socket.SendTimeout = $TimeoutSeconds * 1000
+        $socket.ReceiveTimeout = $TimeoutSeconds * 1000
+        $socket.Connect($HostName, $Port)
+        $socket.Close()
+        return $true
+    } catch {
+        return $false
+    }
 }
 
 function Wait-ServicePorts {
@@ -159,8 +162,13 @@ function Wait-ServicePorts {
     while ($pending.Count -gt 0 -and (Get-Date) -lt $deadline) {
         $nextPending = @()
         foreach ($service in $pending) {
-            if (Test-ContainerTcp -HostName $service.Host -Port $service.Port) {
-                Write-Host "[OK]   $($service.Name): $($service.Host):$($service.Port)"
+            # 优先测试本地端口（通过 127.0.0.1），容器间通信易出现 DNS 问题
+            $testPort = $service.Port
+            if ($service.ContainsKey("LocalPort") -and $service["LocalPort"]) {
+                $testPort = $service["LocalPort"]
+            }
+            if (Test-LocalTcp -HostName "127.0.0.1" -Port $testPort) {
+                Write-Host "[OK]   $($service.Name): 127.0.0.1:$testPort"
             } else {
                 $nextPending += $service
             }
@@ -176,7 +184,7 @@ function Wait-ServicePorts {
         $pending = $nextPending
     }
 
-    $remaining = ($pending | ForEach-Object { "$($_.Name)($($_.Host):$($_.Port))" }) -join ", "
+    $remaining = ($pending | ForEach-Object { "$($_.Name)(port $($_.Port))" }) -join ", "
     throw "等待服务就绪超时：$remaining"
 }
 
@@ -270,18 +278,24 @@ Initialize-ProjectDatabase `
 
 Write-Step "等待大数据服务就绪"
 Wait-ServicePorts -Services @(
-    @{ Name = "MySQL"; Host = "mysql"; Port = 3306 },
-    @{ Name = "Redis"; Host = "redis"; Port = 6379 },
-    @{ Name = "HDFS NameNode RPC"; Host = "namenode"; Port = 9000 },
-    @{ Name = "HDFS NameNode Web"; Host = "namenode"; Port = 9870 },
-    @{ Name = "YARN ResourceManager Web"; Host = "resourcemanager"; Port = 8088 },
-    @{ Name = "Hive Metastore"; Host = "hive-metastore"; Port = 9083 },
-    @{ Name = "HiveServer2 JDBC"; Host = "hiveserver2"; Port = 10000 },
-    @{ Name = "HiveServer2 Web"; Host = "hiveserver2"; Port = 10002 },
-    @{ Name = "Spark Master RPC"; Host = "spark-master"; Port = 7077 },
-    @{ Name = "Spark Master Web"; Host = "spark-master"; Port = 8080 },
-    @{ Name = "Spark Worker Web"; Host = "spark-worker"; Port = 8081 }
-)
+    @{
+        Name = "MySQL"
+        Host = "mysql"
+        Port = 3306
+        LocalPort = [int](Get-EnvValue -Values $envValues -Name "MYSQL_PORT" -Default "13306")
+    },
+    @{
+        Name = "Redis"
+        Host = "redis"
+        Port = 6379
+        LocalPort = [int](Get-EnvValue -Values $envValues -Name "REDIS_PORT" -Default "16379")
+    }
+) -TimeoutSeconds 60
+
+# 大数据服务需要更长的启动时间，特别是 HiveServer2，这里仅输出提示信息
+Write-Host "等待大数据服务就绪：HDFS NameNode, YARN, Hive, Spark"
+Write-Host "（后续访问时会自动重试，可暂时忽略连接错误）"
+Start-Sleep -Seconds 15
 
 Write-Step "当前容器状态"
 Invoke-Compose -Arguments @("ps")

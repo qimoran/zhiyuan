@@ -1,0 +1,259 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "研 考研择校推荐" [ref=e3] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e4]:
+      - link "首页" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - link "学校列表" [ref=e6] [cursor=pointer]:
+        - /url: /universities
+      - link "专业列表" [ref=e7] [cursor=pointer]:
+        - /url: /majors
+      - link "开始推荐 →" [ref=e8] [cursor=pointer]:
+        - /url: /recommend
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - article [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: 考研总分
+          - strong [ref=e14]: "355"
+          - generic [ref=e15]: 满分 400
+        - generic [ref=e16]:
+          - generic [ref=e18]:
+            - generic [ref=e19]: 政治
+            - strong [ref=e20]: "68"
+          - generic [ref=e24]:
+            - generic [ref=e25]: 英语
+            - strong [ref=e26]: "72"
+          - generic [ref=e30]:
+            - generic [ref=e31]: 专业课一
+            - strong [ref=e32]: "105"
+          - generic [ref=e36]:
+            - generic [ref=e37]: 专业课二
+            - strong [ref=e38]: "110"
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - text: 共找到
+          - strong [ref=e43]: "22"
+          - text: 个候选学校， 返回
+          - strong [ref=e44]: "9"
+          - text: 个推荐
+        - generic [ref=e46]:
+          - text: 专业：
+          - strong [ref=e47]: 计算机
+        - generic [ref=e49]: 2026年
+      - generic [ref=e50]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: ◎
+              - text: 冲刺档
+            - strong [ref=e55]: 2 所
+          - generic [ref=e56]:
+            - article [ref=e57]:
+              - generic [ref=e58]:
+                - generic [ref=e59]:
+                  - heading "重庆大学" [level=3] [ref=e60]
+                  - generic [ref=e61]: 985/211
+                - generic "推荐星级" [ref=e62]:
+                  - generic [ref=e63]: ★
+                  - generic [ref=e64]: ★
+                  - generic [ref=e65]: ★
+                  - generic [ref=e66]: ★
+                  - generic [ref=e67]: ★
+              - paragraph [ref=e68]:
+                - text: 计算机技术
+                - generic [ref=e69]: ·
+                - emphasis [ref=e70]: 学硕
+                - generic [ref=e71]: ·
+                - emphasis [ref=e72]: 非全日制
+              - generic [ref=e73]:
+                - generic [ref=e74]:
+                  - text: 录取线
+                  - strong [ref=e75]: "370"
+                - generic [ref=e76]: "-15 分"
+                - generic [ref=e77]:
+                  - text: 你的分数
+                  - strong [ref=e78]: "355"
+              - generic [ref=e81]:
+                - generic [ref=e82]: △
+                - text: 总分低于近三年录取均线15分，建议重点备考
+              - button "推荐理由 ⌄" [ref=e83] [cursor=pointer]
+            - article [ref=e84]:
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - heading "西南大学" [level=3] [ref=e87]
+                  - generic [ref=e88]: "211"
+                - generic "推荐星级" [ref=e89]:
+                  - generic [ref=e90]: ★
+                  - generic [ref=e91]: ★
+                  - generic [ref=e92]: ★
+                  - generic [ref=e93]: ★
+                  - generic [ref=e94]: ★
+              - paragraph [ref=e95]:
+                - text: 计算机技术
+                - generic [ref=e96]: ·
+                - emphasis [ref=e97]: 学硕
+                - generic [ref=e98]: ·
+                - emphasis [ref=e99]: 非全日制
+              - generic [ref=e100]:
+                - generic [ref=e101]:
+                  - text: 录取线
+                  - strong [ref=e102]: "362"
+                - generic [ref=e103]: "-7 分"
+                - generic [ref=e104]:
+                  - text: 你的分数
+                  - strong [ref=e105]: "355"
+              - generic [ref=e108]:
+                - generic [ref=e109]: △
+                - text: 总分低于近三年录取均线7分，建议重点备考
+              - button "推荐理由 ⌄" [ref=e110] [cursor=pointer]
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]: 盾
+              - text: 稳妥档
+            - strong [ref=e115]: 2 所
+          - generic [ref=e116]:
+            - article [ref=e117]:
+              - generic [ref=e118]:
+                - generic [ref=e119]:
+                  - heading "重庆邮电大学" [level=3] [ref=e120]
+                  - generic [ref=e121]: 双一流
+                - generic "推荐星级" [ref=e122]:
+                  - generic [ref=e123]: ★
+                  - generic [ref=e124]: ★
+                  - generic [ref=e125]: ★
+                  - generic [ref=e126]: ★
+                  - generic [ref=e127]: ★
+              - paragraph [ref=e128]:
+                - text: 信息与通信工程
+                - generic [ref=e129]: ·
+                - emphasis [ref=e130]: 学硕
+                - generic [ref=e131]: ·
+                - emphasis [ref=e132]: 非全日制
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - text: 录取线
+                  - strong [ref=e135]: "348"
+                - generic [ref=e136]: +7 分
+                - generic [ref=e137]:
+                  - text: 你的分数
+                  - strong [ref=e138]: "355"
+              - button "推荐理由 ⌄" [ref=e141] [cursor=pointer]
+            - article [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]:
+                  - heading "重庆交通大学" [level=3] [ref=e145]
+                  - generic [ref=e146]: 双一流
+                - generic "推荐星级" [ref=e147]:
+                  - generic [ref=e148]: ★
+                  - generic [ref=e149]: ★
+                  - generic [ref=e150]: ★
+                  - generic [ref=e151]: ★
+                  - generic [ref=e152]: ★
+              - paragraph [ref=e153]:
+                - text: 计算机技术
+                - generic [ref=e154]: ·
+                - emphasis [ref=e155]: 学硕
+                - generic [ref=e156]: ·
+                - emphasis [ref=e157]: 非全日制
+              - generic [ref=e158]:
+                - generic [ref=e159]:
+                  - text: 录取线
+                  - strong [ref=e160]: "345"
+                - generic [ref=e161]: +10 分
+                - generic [ref=e162]:
+                  - text: 你的分数
+                  - strong [ref=e163]: "355"
+              - button "推荐理由 ⌄" [ref=e166] [cursor=pointer]
+        - generic [ref=e167]:
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e170]: ↗
+              - text: 保底档
+            - strong [ref=e171]: 3 所
+          - generic [ref=e172]:
+            - article [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e175]:
+                  - heading "重庆工商大学" [level=3] [ref=e176]
+                  - generic [ref=e177]: 普通院校
+                - generic "推荐星级" [ref=e178]:
+                  - generic [ref=e179]: ★
+                  - generic [ref=e180]: ★
+                  - generic [ref=e181]: ★
+                  - generic [ref=e182]: ★
+                  - generic [ref=e183]: ★
+              - paragraph [ref=e184]:
+                - text: 计算机技术
+                - generic [ref=e185]: ·
+                - emphasis [ref=e186]: 学硕
+                - generic [ref=e187]: ·
+                - emphasis [ref=e188]: 非全日制
+              - generic [ref=e189]:
+                - generic [ref=e190]:
+                  - text: 录取线
+                  - strong [ref=e191]: "330"
+                - generic [ref=e192]: +25 分
+                - generic [ref=e193]:
+                  - text: 你的分数
+                  - strong [ref=e194]: "355"
+              - button "推荐理由 ⌄" [ref=e197] [cursor=pointer]
+            - article [ref=e198]:
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - heading "重庆理工大学" [level=3] [ref=e201]
+                  - generic [ref=e202]: 普通院校
+                - generic "推荐星级" [ref=e203]:
+                  - generic [ref=e204]: ★
+                  - generic [ref=e205]: ★
+                  - generic [ref=e206]: ★
+                  - generic [ref=e207]: ★
+                  - generic [ref=e208]: ★
+              - paragraph [ref=e209]:
+                - text: 计算机技术
+                - generic [ref=e210]: ·
+                - emphasis [ref=e211]: 学硕
+                - generic [ref=e212]: ·
+                - emphasis [ref=e213]: 非全日制
+              - generic [ref=e214]:
+                - generic [ref=e215]:
+                  - text: 录取线
+                  - strong [ref=e216]: "325"
+                - generic [ref=e217]: +30 分
+                - generic [ref=e218]:
+                  - text: 你的分数
+                  - strong [ref=e219]: "355"
+              - button "推荐理由 ⌄" [ref=e222] [cursor=pointer]
+            - article [ref=e223]:
+              - generic [ref=e224]:
+                - generic [ref=e225]:
+                  - heading "重庆科技大学" [level=3] [ref=e226]
+                  - generic [ref=e227]: 普通院校
+                - generic "推荐星级" [ref=e228]:
+                  - generic [ref=e229]: ★
+                  - generic [ref=e230]: ★
+                  - generic [ref=e231]: ★
+                  - generic [ref=e232]: ★
+                  - generic [ref=e233]: ★
+              - paragraph [ref=e234]:
+                - text: 计算机技术
+                - generic [ref=e235]: ·
+                - emphasis [ref=e236]: 学硕
+                - generic [ref=e237]: ·
+                - emphasis [ref=e238]: 非全日制
+              - generic [ref=e239]:
+                - generic [ref=e240]:
+                  - text: 录取线
+                  - strong [ref=e241]: "318"
+                - generic [ref=e242]: +37 分
+                - generic [ref=e243]:
+                  - text: 你的分数
+                  - strong [ref=e244]: "355"
+              - button "推荐理由 ⌄" [ref=e247] [cursor=pointer]
+      - generic [ref=e248]:
+        - link "重新推荐" [ref=e249] [cursor=pointer]:
+          - /url: /recommend
+        - button "生成推荐报告" [ref=e250] [cursor=pointer]
+        - button "保存结果" [ref=e251] [cursor=pointer]

@@ -21,6 +21,8 @@ from src.services.score_service import (
 
 DEFAULT_BUCKET_LIMIT = 5
 MAX_CANDIDATES = 300
+BUCKET_ORDER = ("rush", "stable", "safe")
+RANK_LABELS = {"rush": "冲刺", "stable": "稳妥", "safe": "保底"}
 
 
 @dataclass(frozen=True)
@@ -60,11 +62,9 @@ def recommend(payload: dict[str, Any]) -> dict[str, Any]:
             continue
         grouped[item["rank_type"]].append(item)
 
-    for key in grouped:
-        grouped[key] = sorted(grouped[key], key=lambda item: item["recommend_score"], reverse=True)[
-            : recommend_input.bucket_limit
-        ]
+    grouped, distribution_warnings = finalize_grouped_recommendations(grouped, recommend_input.bucket_limit)
 
+    warnings.extend(distribution_warnings)
     warnings.extend(build_global_warnings(grouped, candidates))
     score_evaluation = build_score_evaluation_summary(grouped, recommend_input)
     result = {
@@ -72,7 +72,8 @@ def recommend(payload: dict[str, Any]) -> dict[str, Any]:
         "score_evaluation": score_evaluation,
         "recommendations": grouped,
         "warnings": dedupe(warnings),
-        "candidate_count": len(candidates),
+        "candidate_count": count_unique_schools(candidates),
+        "candidate_record_count": len(candidates),
         "returned_count": sum(len(items) for items in grouped.values()),
     }
     log_id = save_recommendation_log(recommend_input.payload, result)
@@ -197,7 +198,7 @@ def build_recommendation_item(
     total_diff = recommend_input.total_score - int(row["total_score_line"])
     single_results = build_single_subject_results(recommend_input, row, thresholds)
     overall_status = build_overall_status(total_diff, single_results, thresholds)
-    if overall_status == "unsafe":
+    if overall_status == "unsafe" and not is_acceptable_rush_candidate(total_diff, single_results, rules):
         return None
 
     rank_type = classify_rank_type(total_diff, overall_status, row, rules)
@@ -275,6 +276,95 @@ def classify_rank_type(
     return "stable"
 
 
+def is_acceptable_rush_candidate(
+    total_diff: int,
+    single_results: list[dict[str, Any]],
+    rules: dict[str, Any],
+) -> bool:
+    """允许总分略低于参考线的真实候选进入冲刺档，但单科不能低于线。"""
+    thresholds = rules.get("score_thresholds", {}) if isinstance(rules, dict) else {}
+    rush_min = int(thresholds.get("rush_avg_score_diff_min") or -10)
+    if total_diff < rush_min:
+        return False
+    return not any(result["diff"] < 0 for result in single_results)
+
+
+def finalize_grouped_recommendations(
+    grouped: dict[str, list[dict[str, Any]]],
+    bucket_limit: int,
+) -> tuple[dict[str, list[dict[str, Any]]], list[str]]:
+    """按学校去重，并在真实候选范围内补齐过稀疏的冲稳保档位。"""
+    warnings: list[str] = []
+    finalized: dict[str, list[dict[str, Any]]] = {}
+    used_school_ids: set[int] = set()
+
+    for bucket in BUCKET_ORDER:
+        unique_items = unique_school_items(grouped.get(bucket, []))
+        kept = []
+        for item in unique_items:
+            school_id = int(item["candidate_school_id"])
+            if school_id in used_school_ids:
+                continue
+            kept.append(item)
+            used_school_ids.add(school_id)
+        finalized[bucket] = kept
+
+    if not finalized["rush"] and len(finalized["stable"]) >= 2:
+        moved = retag_items(finalized["stable"][:1], "rush")
+        finalized["rush"].extend(moved)
+        finalized["stable"] = finalized["stable"][1:]
+        warnings.append("冲刺档严格阈值下为空，已从真实稳妥候选中选取最接近的一项作为冲刺参考。")
+    elif not finalized["rush"] and len(finalized["safe"]) >= 3:
+        moved = retag_items(finalized["safe"][:1], "rush")
+        finalized["rush"].extend(moved)
+        finalized["safe"] = finalized["safe"][1:]
+        warnings.append("冲刺档严格阈值下为空，已按真实候选相对难度补充冲刺参考。")
+
+    if not finalized["stable"] and len(finalized["safe"]) >= 2:
+        move_count = min(bucket_limit, len(finalized["safe"]) - 1, max(1, len(finalized["safe"]) // 2))
+        moved = retag_items(finalized["safe"][:move_count], "stable")
+        finalized["stable"].extend(moved)
+        finalized["safe"] = finalized["safe"][move_count:]
+        warnings.append("稳妥档严格阈值下为空，已按真实候选相对难度从保底候选中拆分出稳妥参考。")
+
+    if not finalized["safe"] and len(finalized["stable"]) >= 2:
+        moved = retag_items(finalized["stable"][-1:], "safe")
+        finalized["safe"].extend(moved)
+        finalized["stable"] = finalized["stable"][:-1]
+        warnings.append("保底档严格阈值下为空，已按真实候选相对难度补充保底参考。")
+
+    for bucket in BUCKET_ORDER:
+        finalized[bucket] = finalized[bucket][:bucket_limit]
+    return finalized, warnings
+
+
+def unique_school_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    result = []
+    seen_school_ids: set[int] = set()
+    for item in sorted(items, key=lambda value: value["recommend_score"], reverse=True):
+        school_id = int(item["candidate_school_id"])
+        if school_id in seen_school_ids:
+            continue
+        result.append(item)
+        seen_school_ids.add(school_id)
+    return result
+
+
+def count_unique_schools(items: list[dict[str, Any]]) -> int:
+    return len({int(item["candidate_school_id"]) for item in items if item.get("candidate_school_id") is not None})
+
+
+def retag_items(items: list[dict[str, Any]], rank_type: str) -> list[dict[str, Any]]:
+    return [retag_item(item, rank_type) for item in items]
+
+
+def retag_item(item: dict[str, Any], rank_type: str) -> dict[str, Any]:
+    copied = dict(item)
+    copied["rank_type"] = rank_type
+    copied["reason"] = build_reason_from_item(copied, rank_type)
+    return copied
+
+
 def query_plan_history(major_id: int, target_year: int) -> list[dict[str, Any]]:
     return fetch_all(
         """
@@ -350,13 +440,34 @@ def calculate_recommend_score(
 
 
 def build_reason(row: dict[str, Any], rank_type: str, total_diff: int, plan_history: list[dict[str, Any]]) -> str:
-    rank_text = {"rush": "冲刺", "stable": "稳妥", "safe": "保底"}[rank_type]
+    rank_text = RANK_LABELS[rank_type]
     plan_count = row.get("plan_count")
     plan_text = f"，当前计划招生 {plan_count} 人" if plan_count is not None else ""
+    diff_text = (
+        f"总分高出当前参考复试线 {total_diff} 分"
+        if total_diff >= 0
+        else f"总分低于当前参考复试线 {abs(total_diff)} 分"
+    )
     return (
         f"{row['university_name']} {row['major_name']} 可作为{rank_text}目标："
-        f"总分高出当前参考复试线 {total_diff} 分{plan_text}，"
+        f"{diff_text}{plan_text}，"
         f"近三年可用计划记录 {len(plan_history)} 年。"
+    )
+
+
+def build_reason_from_item(item: dict[str, Any], rank_type: str) -> str:
+    rank_text = RANK_LABELS[rank_type]
+    total_diff = int(item.get("score_diff") or 0)
+    plan_count = item.get("plan_count")
+    plan_text = f"，当前计划招生 {plan_count} 人" if plan_count is not None else ""
+    diff_text = (
+        f"总分高出当前参考复试线 {total_diff} 分"
+        if total_diff >= 0
+        else f"总分低于当前参考复试线 {abs(total_diff)} 分"
+    )
+    return (
+        f"{item['university_name']} {item['major_name']} 可作为{rank_text}目标："
+        f"{diff_text}{plan_text}，该档位基于当前真实候选的相对难度生成。"
     )
 
 
@@ -366,7 +477,9 @@ def build_item_warnings(
     plan_history: list[dict[str, Any]],
 ) -> list[str]:
     warnings = []
-    if total_diff < 10:
+    if total_diff < 0:
+        warnings.append(f"总分低于参考线 {abs(total_diff)} 分，仅适合作为冲刺参考。")
+    elif total_diff < 10:
         warnings.append("总分与参考线距离较近，建议重点关注复试比例和当年招生变化。")
     for item in single_results:
         if item["status"] == "warning":

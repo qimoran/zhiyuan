@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell placeholder-page">
+  <div class="page-title-row">
+    <div>
+      <h1>数据图表</h1>
+      <p>S12 图表接口接入后，这里展示趋势图、专业热度和学校类型统计。</p>
+    </div>
+    <a class="btn btn-primary" href="/majors">查看专业数据</a>
+  </div>
+  <div class="placeholder-grid">
+    <article class="placeholder-card"><h2>分数线趋势</h2><p>等待 `/api/chart/line-trend` 接入。</p></article>
+    <article class="placeholder-card"><h2>专业热度</h2><p>等待专业方向数量和招生计划统计接口接入。</p></article>
+    <article class="placeholder-card"><h2>学校类型</h2><p>等待学校层次、类型和覆盖优先级统计接口接入。</p></article>
+  </div>
+</section>
+{% endblock %}

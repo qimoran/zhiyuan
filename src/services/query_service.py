@@ -148,9 +148,13 @@ def get_health_detail() -> dict[str, Any]:
         SELECT
           (SELECT COUNT(*) FROM universities) AS universities,
           (SELECT COUNT(*) FROM majors) AS majors,
+          (SELECT COUNT(*) FROM departments) AS departments,
           (SELECT COUNT(*) FROM enrollment_plans) AS enrollment_plans,
           (SELECT COUNT(*) FROM score_lines) AS score_lines,
-          (SELECT COUNT(*) FROM source_documents) AS source_documents
+          (SELECT COUNT(*) FROM source_documents) AS source_documents,
+          (SELECT MIN(year) FROM enrollment_plans) AS min_year,
+          (SELECT MAX(year) FROM enrollment_plans) AS max_year,
+          (SELECT COUNT(DISTINCT year) FROM enrollment_plans) AS year_count
         """
     )
     return serialize_row(row or {})
