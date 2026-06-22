@@ -12,6 +12,25 @@
     </ol>
   </div>
 
+  <section class="agentic-recommend-card" aria-label="AI 对话推荐">
+    <div class="agentic-recommend-head">
+      <div>
+        <h2>AI 对话推荐</h2>
+        <p>通过多轮问答收集背景、专业、地区和预估分，生成三档推荐。</p>
+      </div>
+      <button class="btn btn-secondary" type="button" data-agentic-reset>重新开始</button>
+    </div>
+    <div class="agentic-chat-box" data-agentic-messages>
+      <div class="agentic-message assistant">你好，我可以通过对话帮你完成择校推荐。请先告诉我你的本科学校和本科专业。</div>
+    </div>
+    <form class="agentic-input-row" data-agentic-form>
+      <input type="text" name="agentic_message" placeholder="例如：我本科是重庆文理学院，软件工程专业" autocomplete="off">
+      <button class="btn btn-primary" type="submit" data-agentic-send>发送</button>
+    </form>
+    <div class="agentic-error" data-agentic-error></div>
+    <section class="agentic-result" data-agentic-result hidden></section>
+  </section>
+
   <form class="form-card" id="recommendForm" novalidate>
     <div class="form-progress">
       <span data-step-title>步骤 1 / 3：基本信息</span>
@@ -30,12 +49,13 @@
         </label>
         <label class="field autocomplete-field">
           <span>专业门类</span>
-          <input name="major_category" type="text" placeholder="输入 3 个字符开始搜索" autocomplete="off" required>
+          <input name="major_category" type="text" placeholder="输入关键词搜索，如：计算、工学" autocomplete="off" required>
           <div class="autocomplete-panel" data-category-suggestions></div>
         </label>
-        <label class="field">
+        <label class="field autocomplete-field">
           <span>目标专业</span>
-          <input name="major_name" type="text" placeholder="例如：计算机技术" required>
+          <input name="major_name" type="text" placeholder="输入关键词搜索，如：计算机技术" autocomplete="off" required>
+          <div class="autocomplete-panel" data-major-suggestions></div>
         </label>
         <label class="field">
           <span>学位类型</span>

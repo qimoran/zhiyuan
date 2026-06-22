@@ -126,6 +126,21 @@
     return rows.sort((a, b) => String(a[state.sortKey] || "").localeCompare(String(b[state.sortKey] || ""), "zh-CN") * state.sortDir);
   }
 
+  function renderMetaPill(kind, value, label) {
+    const classMap = {
+      degree: {
+        academic: "major-pill-degree-academic",
+        professional: "major-pill-degree-professional",
+      },
+      study: {
+        full_time: "major-pill-study-full",
+        part_time: "major-pill-study-part",
+      },
+    };
+    const toneClass = (classMap[kind] && classMap[kind][value]) || "major-pill-neutral";
+    return `<span class="major-pill ${toneClass}">${App.escapeHtml(label || value || "未填写")}</span>`;
+  }
+
   function renderTable() {
     const rows = sortedRows();
     emptyEl.hidden = rows.length > 0;
@@ -135,8 +150,8 @@
           <td>${App.escapeHtml(item.university_name)}</td>
           <td>${App.escapeHtml(item.department_name)}</td>
           <td>${App.escapeHtml(item.major_name)}</td>
-          <td>${App.labelDegree(item.degree_type)}</td>
-          <td>${App.labelStudyMode(item.study_mode)}</td>
+          <td>${renderMetaPill("degree", item.degree_type, App.labelDegree(item.degree_type))}</td>
+          <td>${renderMetaPill("study", item.study_mode, App.labelStudyMode(item.study_mode))}</td>
           <td>${App.escapeHtml(item.research_direction || "未区分研究方向")}</td>
         </tr>
       `)

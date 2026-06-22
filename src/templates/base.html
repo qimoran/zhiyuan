@@ -3,29 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f766e">
   <title>{{ page_title }} - 考研择校推荐系统</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
     <a class="brand" href="/">考研择校推荐</a>
-    <button class="nav-toggle" type="button" aria-label="打开导航" data-nav-toggle>☰</button>
+    <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false" data-nav-toggle>☰</button>
     <nav class="site-nav" data-site-nav>
       <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="/">首页</a>
       <a class="nav-link {{ 'active' if active_page == 'universities' else '' }}" href="/universities">学校列表</a>
       <a class="nav-link {{ 'active' if active_page == 'majors' else '' }}" href="/majors">专业列表</a>
+      <a class="nav-link {{ 'active' if active_page == 'charts' else '' }}" href="/charts">数据图表</a>
+      <a class="nav-link {{ 'active' if active_page == 'result' else '' }}" href="/result">推荐结果</a>
+      <a class="nav-link {{ 'active' if active_page == 'report' else '' }}" href="/report">推荐报告</a>
+      <a class="nav-link {{ 'active' if active_page == 'profile' else '' }}" href="/profile">个人中心</a>
       <a class="nav-link nav-link-primary {{ 'active' if active_page == 'recommend' else '' }}" href="/recommend">开始推荐</a>
+      <div class="nav-auth" data-nav-auth>
+        <a class="nav-auth-link" href="/login">登录</a>
+        <a class="nav-auth-link" href="/register">注册</a>
+      </div>
     </nav>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
 
   <div class="toast" data-toast role="status" aria-live="polite"></div>
 
   <script src="{{ url_for('static', filename='js/api.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

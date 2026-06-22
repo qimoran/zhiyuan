@@ -172,6 +172,9 @@ CREATE TABLE IF NOT EXISTS score_lines (
   department_id BIGINT NULL COMMENT '学院 ID',
   major_id BIGINT NULL COMMENT '专业 ID',
   major_category VARCHAR(100) NULL COMMENT '专业门类',
+  university_id_key BIGINT NOT NULL DEFAULT 0 COMMENT '唯一索引用学校 ID 归一值，由触发器维护',
+  major_id_key BIGINT NOT NULL DEFAULT 0 COMMENT '唯一索引用专业 ID 归一值，由触发器维护',
+  major_category_key VARCHAR(100) NOT NULL DEFAULT '' COMMENT '唯一索引用专业门类归一值，由触发器维护',
   total_score_line INT NOT NULL COMMENT '总分线',
   politics_line INT NULL COMMENT '政治线',
   english_line INT NULL COMMENT '英语线',
@@ -183,6 +186,7 @@ CREATE TABLE IF NOT EXISTS score_lines (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (id),
   UNIQUE KEY uk_score_lines_unique (year, line_type, university_id, major_id, major_category),
+  UNIQUE KEY uk_score_lines_strict_unique (year, line_type, university_id_key, major_id_key, major_category_key),
   KEY idx_score_lines_year_type (year, line_type),
   KEY idx_score_lines_university_major (university_id, major_id),
   KEY idx_score_lines_category (major_category),
@@ -266,16 +270,34 @@ CREATE TABLE IF NOT EXISTS major_statistics (
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='专业统计结果表';
 
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  email VARCHAR(120) NOT NULL COMMENT '登录邮箱',
+  username VARCHAR(80) NULL COMMENT '兼容旧版登录用户名',
+  nickname VARCHAR(100) NOT NULL COMMENT '昵称',
+  password_hash VARCHAR(255) NOT NULL COMMENT '密码哈希',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_users_email (email),
+  UNIQUE KEY uk_users_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='前台用户表';
+
 CREATE TABLE IF NOT EXISTS recommendation_logs (
   id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  user_id BIGINT NULL COMMENT '前台用户 ID',
   trace_id VARCHAR(64) NOT NULL COMMENT '请求追踪 ID',
   request_json JSON NOT NULL COMMENT '推荐请求参数',
   result_summary_json JSON NULL COMMENT '推荐结果摘要',
   warning_json JSON NULL COMMENT '风险提示',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (id),
+  KEY idx_recommendation_logs_user_created (user_id, created_at),
   KEY idx_recommendation_logs_trace_id (trace_id),
-  KEY idx_recommendation_logs_created_at (created_at)
+  KEY idx_recommendation_logs_created_at (created_at),
+  CONSTRAINT fk_recommendation_logs_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='推荐日志表';
 
 CREATE TABLE IF NOT EXISTS report_records (

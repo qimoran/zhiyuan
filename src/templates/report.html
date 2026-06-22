@@ -5,14 +5,19 @@
   <div class="page-title-row">
     <div>
       <h1>推荐报告</h1>
-      <p>S14 报告接口接入前，当前页面展示最近一次推荐摘要。</p>
+      <p>登录后查看个人历史推荐摘要，选择记录后生成 AI 择校建议报告；大模型不可用时自动回退模板报告。</p>
     </div>
     <a class="btn btn-primary" href="/recommend">重新推荐</a>
   </div>
   <section class="report-summary" data-report-summary></section>
-  <article class="notice-box">
-    这里暂不调用不存在的 PDF 或 AI 报告接口。后续 S14 完成后，可把当前推荐结果传给报告接口生成正式报告。
+  <div class="report-actions">
+    <button class="btn btn-primary" type="button" data-report-generate>重新生成 AI 报告</button>
+    <button class="btn btn-secondary" type="button" data-report-save>保存到本地</button>
+  </div>
+  <article class="notice-box" data-report-status>
+    报告内容仅供择校参考，正式填报前需要核对高校官网公告。
   </article>
+  <article class="report-content" data-report-content></article>
 </section>
 {% endblock %}
 

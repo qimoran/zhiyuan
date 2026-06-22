@@ -19,7 +19,7 @@ def recommend_page():
 
 @web_bp.get("/result")
 def result_page():
-    return render_template("result.html", active_page="recommend", page_title="推荐结果")
+    return render_template("result.html", active_page="result", page_title="推荐结果")
 
 
 @web_bp.get("/universities")
@@ -40,6 +40,21 @@ def charts_page():
 @web_bp.get("/report")
 def report_page():
     return render_template("report.html", active_page="report", page_title="推荐报告")
+
+
+@web_bp.get("/login")
+def login_page():
+    return render_template("login.html", active_page="login", page_title="登录")
+
+
+@web_bp.get("/register")
+def register_page():
+    return render_template("register.html", active_page="register", page_title="注册")
+
+
+@web_bp.get("/profile")
+def profile_page():
+    return render_template("profile.html", active_page="profile", page_title="个人中心")
 
 
 @web_bp.get("/sources")

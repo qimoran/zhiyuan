@@ -131,6 +131,61 @@ FLUSH PRIVILEGES;
     }
 }
 
+function Invoke-MysqlSqlFile {
+    param(
+        [string]$RootPassword,
+        [string]$DatabaseName,
+        [string]$SqlPath
+    )
+
+    if (-not (Test-Path -LiteralPath $SqlPath)) {
+        throw "SQL 文件不存在：$SqlPath"
+    }
+
+    $sql = Get-Content -LiteralPath $SqlPath -Raw -Encoding UTF8
+    $dockerArgs = @("compose") + $ComposeProfiles + @(
+        "exec", "-T", "-e", "MYSQL_PWD=$RootPassword", "mysql",
+        "mysql", "--default-character-set=utf8mb4", "-uroot", $DatabaseName
+    )
+    $sql | & docker @dockerArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "执行 SQL 结构脚本失败：$SqlPath"
+    }
+}
+
+function Sync-PythonDependencies {
+    $requirementsPath = "/workspace/requirements.txt"
+    $checkCode = @"
+import importlib.util
+import sys
+
+required = ["pdfplumber", "pytest", "dotenv", "yaml"]
+missing = [name for name in required if importlib.util.find_spec(name) is None]
+if missing:
+    print(",".join(missing))
+    sys.exit(1)
+print("ok")
+"@
+
+    $checkArgs = @("compose") + $ComposeProfiles + @("exec", "-T", "python", "python", "-c", $checkCode)
+    $checkOutput = & docker @checkArgs 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[OK]   Python 依赖已就绪"
+        return
+    }
+
+    Write-Host "检测到 Python 容器缺少依赖：$checkOutput" -ForegroundColor Yellow
+    Write-Host "正在按 requirements.txt 同步 Python 依赖。"
+    $installArgs = @("compose") + $ComposeProfiles + @(
+        "exec", "-T", "python",
+        "python", "-m", "pip", "install", "-r", $requirementsPath
+    )
+    & docker @installArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "同步 Python 依赖失败。可尝试执行：powershell -ExecutionPolicy Bypass -File `".\scripts\start_dev_env.ps1`" -Build"
+    }
+}
+
 function Test-LocalTcp {
     param(
         [string]$HostName,
@@ -268,6 +323,9 @@ if ($allServicesRunning -and -not $Build) {
     Invoke-Compose -Arguments $upArgs
 }
 
+Write-Step "同步 Python 工具容器依赖"
+Sync-PythonDependencies
+
 Write-Step "初始化志愿填报项目数据库"
 Wait-MysqlReady -RootPassword $mysqlRootPassword
 Initialize-ProjectDatabase `
@@ -275,6 +333,19 @@ Initialize-ProjectDatabase `
     -DatabaseName $databaseName `
     -UserName $databaseUser `
     -Password $databasePassword
+
+$schemaFiles = @(
+    "001_create_tables.sql",
+    "002_s04_schema_patch.sql",
+    "005_score_lines_unique_patch.sql",
+    "007_user_auth_history.sql",
+    "008_user_email_auth.sql"
+)
+foreach ($schemaFile in $schemaFiles) {
+    $schemaPath = Join-Path $ProjectRoot "sql\mysql\$schemaFile"
+    Write-Host "应用数据库结构脚本：$schemaFile"
+    Invoke-MysqlSqlFile -RootPassword $mysqlRootPassword -DatabaseName $databaseName -SqlPath $schemaPath
+}
 
 Write-Step "等待大数据服务就绪"
 Wait-ServicePorts -Services @(

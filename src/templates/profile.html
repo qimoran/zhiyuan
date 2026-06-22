@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell auth-page profile-page">
+  <div class="page-title-row profile-title-row">
+    <div>
+      <span class="page-eyebrow">ACCOUNT WORKSPACE</span>
+      <h1>个人中心</h1>
+      <p>管理账户资料、安全设置和个人推荐记录。</p>
+    </div>
+    <a class="btn btn-secondary" href="/report">查看推荐报告</a>
+  </div>
+
+  <section class="profile-grid">
+    <article class="profile-card profile-overview-card" data-profile-summary>
+      <h2>账户概览</h2>
+      <p class="muted">正在读取登录状态...</p>
+    </article>
+
+    <article class="profile-card profile-metrics-card" data-profile-metrics>
+      <h2>推荐统计</h2>
+      <p class="muted">登录后展示个人推荐统计。</p>
+    </article>
+
+    <form class="form-card auth-form profile-security-card" data-profile-form novalidate>
+      <h2>安全设置</h2>
+      <label class="field">
+        <span>昵称</span>
+        <input name="nickname" type="text" autocomplete="nickname">
+      </label>
+      <label class="field">
+        <span>当前密码</span>
+        <input name="current_password" type="password" autocomplete="current-password">
+      </label>
+      <label class="field">
+        <span>新密码</span>
+        <input name="new_password" type="password" autocomplete="new-password">
+      </label>
+      <div class="form-error" data-profile-error></div>
+      <button class="btn btn-primary" type="submit">保存修改</button>
+    </form>
+
+    <article class="profile-card profile-history-card" data-profile-history>
+      <h2>我的历史推荐</h2>
+      <p class="muted">正在读取个人推荐记录...</p>
+    </article>
+  </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}" defer></script>
+{% endblock %}

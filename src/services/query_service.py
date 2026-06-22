@@ -14,6 +14,30 @@ from src.common.exceptions import ValidationError
 
 MAX_LIMIT = 200
 DEFAULT_LIMIT = 50
+ALLOWED_COUNT_TABLES = {"universities"}
+OFFICIAL_SITE_BY_SCHOOL_ID = {
+    252: "https://yz.cqu.edu.cn/",
+    925: "https://yz.swu.edu.cn/",
+    253: "https://yjsy.cqmu.edu.cn/",
+    519: "https://yjs.cqupt.edu.cn/",
+    255: "https://yz.chsi.com.cn/sch/schoolInfo--schId-368449.dhtml",
+    258: "https://yjszs.cqjtu.edu.cn/",
+    521: "https://graduate.cqnu.edu.cn/",
+    1013: "http://zs.yjs.cqut.edu.cn/",
+    1230: "https://yjs.cqust.edu.cn/",
+    951: "https://grs.ctbu.edu.cn/",
+    260: "https://graduate.sisu.edu.cn/",
+    1496: "https://yjszs.cqwu.edu.cn/",
+    1379: "https://yjsy.sanxiau.edu.cn/",
+    871: "https://www.tmmu.edu.cn/24/list.htm",
+    524: "https://www.scfai.edu.cn/yjsc/",
+    1016: "https://yz.chsi.com.cn/sch/schoolInfo--schId-3416382896.dhtml",
+    1015: "https://www.cqdx.gov.cn/",
+    1645: "https://yjsy.cqctcm.edu.cn/",
+    1643: "https://www.cqucas.ac.cn/admissions/PostgraduateEnrollment/default.html",
+    1580: "https://sszt.yznu.edu.cn/",
+    1529: "https://cigit.cas.cn/yjsjy/",
+}
 
 
 def list_universities(filters: dict[str, Any]) -> dict[str, Any]:
@@ -33,6 +57,7 @@ def list_universities(filters: dict[str, Any]) -> dict[str, Any]:
           school_org_type,
           school_level,
           coverage_priority,
+          official_site,
           official_verified_status,
           recruit_number_reference,
           major_number_reference,
@@ -49,8 +74,19 @@ def list_universities(filters: dict[str, Any]) -> dict[str, Any]:
         """,
         params | {"limit": limit, "offset": offset},
     )
+    items = [with_validated_official_site(item) for item in items]
     total = fetch_total("universities", where_sql, params)
     return paged_response(items, total, limit, offset)
+
+
+def with_validated_official_site(item: dict[str, Any]) -> dict[str, Any]:
+    """重庆候选库优先使用已校验链接，避免数据库旧链接继续影响页面。"""
+    school_id = item.get("candidate_school_id")
+    try:
+        school_id = int(school_id) if school_id is not None else None
+    except (TypeError, ValueError):
+        school_id = None
+    return item | {"official_site": OFFICIAL_SITE_BY_SCHOOL_ID.get(school_id) or item.get("official_site")}
 
 
 def list_majors(filters: dict[str, Any]) -> dict[str, Any]:
@@ -235,6 +271,8 @@ def build_source_where(filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
 
 
 def fetch_total(table_name: str, where_sql: str, params: dict[str, Any]) -> int:
+    if table_name not in ALLOWED_COUNT_TABLES:
+        raise ValidationError(f"不允许统计未登记的数据表：{table_name}")
     row = fetch_one(f"SELECT COUNT(*) AS total FROM {table_name} {where_sql}", params)
     return int(row["total"] if row else 0)
 

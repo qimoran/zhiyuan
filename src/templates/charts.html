@@ -1,18 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="page-shell placeholder-page">
+<section class="page-shell charts-page">
   <div class="page-title-row">
     <div>
       <h1>数据图表</h1>
-      <p>S12 图表接口接入后，这里展示趋势图、专业热度和学校类型统计。</p>
+      <p>基于已入库的招生计划、复试线、专业目录和学校候选库，按年份和门类统计的可视化看板。</p>
     </div>
-    <a class="btn btn-primary" href="/majors">查看专业数据</a>
+    <a class="btn btn-light" href="/majors">查看专业数据</a>
   </div>
-  <div class="placeholder-grid">
-    <article class="placeholder-card"><h2>分数线趋势</h2><p>等待 `/api/chart/line-trend` 接入。</p></article>
-    <article class="placeholder-card"><h2>专业热度</h2><p>等待专业方向数量和招生计划统计接口接入。</p></article>
-    <article class="placeholder-card"><h2>学校类型</h2><p>等待学校层次、类型和覆盖优先级统计接口接入。</p></article>
+
+  <div class="global-warning">
+    图表数据来源于掌上考研 V2 公开接口，仅供参考，最终以高校官方公布的招生政策和录取结果为准。
   </div>
+
+  <!-- 招生计划变化趋势 -->
+  <article class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <h2>招生计划变化趋势</h2>
+        <p class="chart-sub">历年重庆研招单位招生计划总数与招生专业数。</p>
+      </div>
+      <div class="chart-filters">
+        <label class="field chart-field">
+          <span>专业门类</span>
+          <select data-plan-category>
+            <option value="">全部门类</option>
+          </select>
+        </label>
+        <label class="field chart-field">
+          <span>专业</span>
+          <select data-plan-major>
+            <option value="">全部专业</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="chart-canvas" data-chart="plan-trend"></div>
+    <p class="chart-note" data-note="plan-trend"></p>
+  </article>
+
+  <!-- 专业热度 + 学校分布 并排 -->
+  <div class="chart-grid-2">
+    <article class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h2>专业门类热度</h2>
+          <p class="chart-sub">各专业门类招生计划规模与专业方向数量。</p>
+        </div>
+        <div class="chart-filters">
+          <label class="field chart-field">
+            <span>招生年份</span>
+            <select data-heat-year></select>
+          </label>
+        </div>
+      </div>
+      <div class="chart-canvas" data-chart="major-heat"></div>
+      <p class="chart-note" data-note="major-heat"></p>
+    </article>
+
+    <article class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h2>学校分布</h2>
+          <p class="chart-sub">重庆研招单位按不同维度的数量分布。</p>
+        </div>
+        <div class="chart-filters">
+          <label class="field chart-field">
+            <span>统计维度</span>
+            <select data-type-dimension>
+              <option value="type">学校类型</option>
+              <option value="priority">覆盖优先级</option>
+              <option value="level">学校层次</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="chart-canvas" data-chart="university-type"></div>
+      <p class="chart-note" data-note="university-type"></p>
+    </article>
+  </div>
+
+  <!-- 复试线趋势（按学校+专业） -->
+  <article class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <h2>复试线趋势</h2>
+        <p class="chart-sub">选择学校和专业，查看历年专业复试线（总分线与各单科线）走势。</p>
+      </div>
+      <div class="chart-filters">
+        <label class="field chart-field">
+          <span>学校</span>
+          <select data-line-university></select>
+        </label>
+        <label class="field chart-field">
+          <span>专业</span>
+          <select data-line-major>
+            <option value="">请先选择学校</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="chart-canvas" data-chart="line-trend"></div>
+    <p class="chart-note" data-note="line-trend"></p>
+  </article>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/vendor/echarts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}" defer></script>
 {% endblock %}

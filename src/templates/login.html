@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-shell auth-page">
+  <div class="auth-panel">
+    <div class="auth-copy">
+      <h1>登录</h1>
+      <p>登录后，系统会把本次推荐结果保存到你的个人历史记录，报告页可以直接查看和生成报告。</p>
+    </div>
+    <form class="form-card auth-form" data-login-form novalidate>
+      <label class="field">
+        <span>邮箱</span>
+        <input name="email" type="email" autocomplete="email" required>
+      </label>
+      <label class="field">
+        <span>密码</span>
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <div class="form-error" data-auth-error></div>
+      <button class="btn btn-primary" type="submit">登录</button>
+      <p class="auth-switch">还没有账号？<a href="/register">去注册</a></p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+{% endblock %}

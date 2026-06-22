@@ -1,5 +1,10 @@
 (function () {
   const toastEl = document.querySelector("[data-toast]");
+  const authState = {
+    loaded: false,
+    authenticated: false,
+    user: null,
+  };
 
   function showToast(message) {
     if (!toastEl) return;
@@ -66,18 +71,84 @@
     const toggle = document.querySelector("[data-nav-toggle]");
     const nav = document.querySelector("[data-site-nav]");
     if (!toggle || !nav) return;
-    toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    toggle.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+  }
+
+  function renderNavAuth() {
+    const target = document.querySelector("[data-nav-auth]");
+    if (!target) return;
+    if (!authState.loaded) return;
+    if (authState.authenticated && authState.user) {
+      const displayName = authState.user.nickname || authState.user.email || "个人中心";
+      target.innerHTML = `
+        <a class="nav-auth-user" href="/profile">${escapeHtml(displayName)}</a>
+        <button class="nav-auth-button" type="button" data-auth-logout>退出</button>
+      `;
+      return;
+    }
+    target.innerHTML = `
+      <a class="nav-auth-link" href="/login">登录</a>
+      <a class="nav-auth-link" href="/register">注册</a>
+    `;
+  }
+
+  async function loadCurrentUser() {
+    try {
+      const data = await fetchJson("/api/auth/me");
+      authState.loaded = true;
+      authState.authenticated = Boolean(data.authenticated);
+      authState.user = data.user || null;
+    } catch (error) {
+      authState.loaded = true;
+      authState.authenticated = false;
+      authState.user = null;
+    }
+    renderNavAuth();
+    document.dispatchEvent(new CustomEvent("app:auth-ready", { detail: { ...authState } }));
+    return authState;
+  }
+
+  async function logout() {
+    await fetchJson("/api/auth/logout", { method: "POST" });
+    authState.loaded = true;
+    authState.authenticated = false;
+    authState.user = null;
+    renderNavAuth();
+    document.dispatchEvent(new CustomEvent("app:auth-ready", { detail: { ...authState } }));
+  }
+
+  function initAuthNav() {
+    loadCurrentUser();
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-auth-logout]");
+      if (!button) return;
+      button.disabled = true;
+      try {
+        await logout();
+        showToast("已退出登录。");
+      } catch (error) {
+        showToast(error.message || "退出失败，请稍后重试。");
+      } finally {
+        button.disabled = false;
+      }
+    });
   }
 
   window.App = {
+    auth: authState,
     buildQuery,
     debounce,
     escapeHtml,
     fetchJson,
     labelDegree,
     labelStudyMode,
+    loadCurrentUser,
     showToast,
   };
 
   document.addEventListener("DOMContentLoaded", initNav);
+  document.addEventListener("DOMContentLoaded", initAuthNav);
 })();

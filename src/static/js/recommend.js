@@ -5,6 +5,7 @@
     degreeTypes: [],
     studyModes: [],
     schoolLevels: [],
+    agenticSessionId: "",
   };
 
   const form = document.querySelector("#recommendForm");
@@ -19,8 +20,17 @@
   const submitBtn = document.querySelector("[data-submit-button]");
   const formError = document.querySelector("[data-form-error]");
   const categoryInput = form.elements.major_category;
-  const suggestions = document.querySelector("[data-category-suggestions]");
+  const categorySuggestions = document.querySelector("[data-category-suggestions]");
+  const majorNameInput = form.elements.major_name;
+  const majorNameSuggestions = document.querySelector("[data-major-suggestions]");
   const totalScoreDisplay = document.querySelector("[data-total-score-display]");
+  const agenticForm = document.querySelector("[data-agentic-form]");
+  const agenticMessages = document.querySelector("[data-agentic-messages]");
+  const agenticInput = agenticForm?.elements.agentic_message;
+  const agenticSend = document.querySelector("[data-agentic-send]");
+  const agenticReset = document.querySelector("[data-agentic-reset]");
+  const agenticError = document.querySelector("[data-agentic-error]");
+  const agenticResult = document.querySelector("[data-agentic-result]");
 
   const stepTitles = ["步骤 1 / 3：基本信息", "步骤 2 / 3：成绩输入", "步骤 3 / 3：偏好设置"];
 
@@ -81,18 +91,74 @@
 
   function renderSuggestions() {
     const keyword = categoryInput.value.trim();
-    if (keyword.length < 3) {
-      suggestions.classList.remove("open");
-      suggestions.innerHTML = "";
+    if (keyword.length < 1) {
+      categorySuggestions.classList.remove("open");
+      categorySuggestions.innerHTML = "";
       return;
     }
-    const matches = state.categories
-      .filter((item) => item.includes(keyword))
-      .slice(0, 12);
-    suggestions.innerHTML = matches
-      .map((item) => `<button type="button" data-category="${App.escapeHtml(item)}">${App.escapeHtml(item)}</button>`)
-      .join("");
-    suggestions.classList.toggle("open", matches.length > 0);
+
+    App.fetchJson(`/api/metadata/search-major-categories?keyword=${encodeURIComponent(keyword)}&limit=12`)
+      .then((matches) => {
+        categorySuggestions.innerHTML = matches
+          .map((item) => `<button type="button" data-category="${App.escapeHtml(item)}">${App.escapeHtml(item)}</button>`)
+          .join("");
+        categorySuggestions.classList.toggle("open", matches.length > 0);
+      })
+      .catch(() => {
+        categorySuggestions.classList.remove("open");
+        categorySuggestions.innerHTML = "";
+      });
+  }
+
+  function majorSearchParams(keyword) {
+    return {
+      keyword,
+      limit: 12,
+      target_year: form.elements.target_year.value,
+      major_category: categoryInput.value.trim(),
+      degree_type: form.elements.degree_type.value,
+      study_mode: form.elements.study_mode.value,
+    };
+  }
+
+  function renderMajorNameSuggestions() {
+    const keyword = majorNameInput.value.trim();
+    if (keyword.length < 1) {
+      majorNameSuggestions.classList.remove("open");
+      majorNameSuggestions.innerHTML = "";
+      return;
+    }
+
+    App.fetchJson(`/api/metadata/search-major-names${App.buildQuery(majorSearchParams(keyword))}`)
+      .then((matches) => {
+        if (!matches.length) {
+          majorNameSuggestions.innerHTML = '<div class="autocomplete-empty">未找到本地专业数据</div>';
+          majorNameSuggestions.classList.add("open");
+          return;
+        }
+        majorNameSuggestions.innerHTML = matches
+          .map((item) => {
+            const code = item.major_code ? `(${App.escapeHtml(item.major_code)})` : "";
+            const category = item.major_category ? ` · ${App.escapeHtml(item.major_category)}` : "";
+            const plan = item.total_plan ? ` · 招生计划 ${App.escapeHtml(item.total_plan)} 人` : "";
+            return `
+              <button
+                type="button"
+                data-major-name="${App.escapeHtml(item.major_name)}"
+                data-major-category="${App.escapeHtml(item.major_category || "")}"
+              >
+                <strong>${App.escapeHtml(item.major_name)} ${code}</strong>
+                <small>${App.escapeHtml(item.match_count || 0)} 所学校${category}${plan}</small>
+              </button>
+            `;
+          })
+          .join("");
+        majorNameSuggestions.classList.toggle("open", matches.length > 0);
+      })
+      .catch(() => {
+        majorNameSuggestions.classList.remove("open");
+        majorNameSuggestions.innerHTML = "";
+      });
   }
 
   function validateScoreField(input) {
@@ -163,12 +229,158 @@
     };
   }
 
+  function addAgenticMessage(role, content) {
+    if (!agenticMessages) return;
+    const message = document.createElement("div");
+    message.className = `agentic-message ${role}`;
+    message.textContent = content;
+    agenticMessages.appendChild(message);
+    agenticMessages.scrollTop = agenticMessages.scrollHeight;
+  }
+
+  function setAgenticLoading(loading) {
+    if (agenticSend) {
+      agenticSend.disabled = loading;
+      agenticSend.textContent = loading ? "分析中..." : "发送";
+    }
+    if (agenticInput) agenticInput.disabled = loading;
+  }
+
+  function applyAgenticProfile(profile) {
+    if (!profile) return;
+    if (profile.target_major && !majorNameInput.value) majorNameInput.value = profile.target_major;
+    if (profile.major_category && !categoryInput.value) categoryInput.value = profile.major_category;
+    if (profile.degree_type && form.elements.degree_type) form.elements.degree_type.value = profile.degree_type;
+    if (profile.study_mode && form.elements.study_mode) form.elements.study_mode.value = profile.study_mode;
+    if (profile.school_level_preference) {
+      form.querySelectorAll("input[name='preferred_school_levels']").forEach((item) => {
+        item.checked = item.value.includes(profile.school_level_preference);
+      });
+    }
+  }
+
+  function agenticTierLabel(key) {
+    return { rush: "冲刺", stable: "稳妥", safe: "保底" }[key] || key;
+  }
+
+  function renderAgenticResult(data) {
+    if (!agenticResult || !data?.recommendation_result) return;
+    const result = data.recommendation_result;
+    const request = data.recommendation_request || {};
+    const groups = result.recommendations || {};
+    const tiers = ["rush", "stable", "safe"];
+    const totalCount = tiers.reduce((sum, key) => sum + ((groups[key] || []).length), 0);
+    if (!totalCount) {
+      agenticResult.hidden = false;
+      agenticResult.innerHTML = `
+        <h3>对话推荐结果</h3>
+        <p class="muted">当前条件没有匹配到推荐院校，可以放宽学校层次或专业关键词后重试。</p>
+      `;
+      return;
+    }
+
+    sessionStorage.setItem("recommendationRequest", JSON.stringify(request));
+    sessionStorage.setItem("recommendationResult", JSON.stringify(result));
+    sessionStorage.removeItem("latestReport");
+    sessionStorage.removeItem("reportGenerationError");
+
+    agenticResult.hidden = false;
+    agenticResult.innerHTML = `
+      <div class="agentic-result-head">
+        <div>
+          <h3>对话推荐结果</h3>
+          <p>专业：${App.escapeHtml(request.major_name || request.major_category || "未填写")} · 总分 ${App.escapeHtml(request.total_score || "")}</p>
+        </div>
+        <a class="btn btn-blue" href="/result">查看完整结果</a>
+      </div>
+      <div class="agentic-result-grid">
+        ${tiers
+          .map((tier) => {
+            const items = groups[tier] || [];
+            return `
+              <article class="agentic-tier ${tier}">
+                <h4>${App.escapeHtml(agenticTierLabel(tier))}</h4>
+                ${
+                  items.length
+                    ? items
+                        .slice(0, 3)
+                        .map(
+                          (item) => `
+                            <div class="agentic-school">
+                              <strong>${App.escapeHtml(item.university_name || "未知院校")}</strong>
+                              <span>${App.escapeHtml(item.major_name || request.major_name || "目标专业")} · 复试线 ${App.escapeHtml(item.score_line || "暂无")} · 分差 ${App.escapeHtml(item.score_diff ?? "暂无")}</span>
+                              <small>${App.escapeHtml(item.evidence_summary || item.reason || "暂无资料摘要")}</small>
+                            </div>
+                          `
+                        )
+                        .join("")
+                    : '<p class="muted">暂无匹配院校</p>'
+                }
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+  }
+
+  async function handleAgenticSubmit(event) {
+    event.preventDefault();
+    const message = agenticInput?.value.trim();
+    if (!message) return;
+    if (agenticError) agenticError.textContent = "";
+    addAgenticMessage("user", message);
+    agenticInput.value = "";
+    setAgenticLoading(true);
+    try {
+      const data = await App.fetchJson("/api/conversation/chat", {
+        method: "POST",
+        body: JSON.stringify({
+          session_id: state.agenticSessionId || undefined,
+          message,
+        }),
+      });
+      state.agenticSessionId = data.session_id || state.agenticSessionId;
+      addAgenticMessage("assistant", data.response || "已收到。");
+      applyAgenticProfile(data.user_profile);
+      renderAgenticResult(data);
+    } catch (error) {
+      if (agenticError) agenticError.textContent = error.message;
+      addAgenticMessage("assistant", "对话推荐暂时不可用，你可以直接填写下方表单生成推荐。");
+    } finally {
+      setAgenticLoading(false);
+      agenticInput?.focus();
+    }
+  }
+
+  function resetAgenticConversation() {
+    state.agenticSessionId = "";
+    if (agenticMessages) {
+      agenticMessages.innerHTML = '<div class="agentic-message assistant">你好，我可以通过对话帮你完成择校推荐。请先告诉我你的本科学校和本科专业。</div>';
+    }
+    if (agenticResult) {
+      agenticResult.hidden = true;
+      agenticResult.innerHTML = "";
+    }
+    if (agenticError) agenticError.textContent = "";
+    if (agenticInput) {
+      agenticInput.value = "";
+      agenticInput.focus();
+    }
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     if (!validateCurrentStep()) return;
     const scoreInputs = Array.from(form.querySelectorAll("input[type='number']"));
     if (!scoreInputs.every(validateScoreField)) {
       setStep(1);
+      return;
+    }
+    const authState = App.auth.loaded ? App.auth : await App.loadCurrentUser();
+    if (!authState.authenticated) {
+      App.showToast("请先登录后再查看推荐结果。");
+      window.location.href = "/login?next=/recommend";
       return;
     }
     const payload = buildPayload();
@@ -182,6 +394,8 @@
       });
       sessionStorage.setItem("recommendationRequest", JSON.stringify(payload));
       sessionStorage.setItem("recommendationResult", JSON.stringify(result));
+      sessionStorage.removeItem("latestReport");
+      sessionStorage.removeItem("reportGenerationError");
       window.location.href = "/result";
     } catch (error) {
       formError.textContent = error.message;
@@ -196,12 +410,22 @@
     if (validateCurrentStep()) setStep(state.step + 1);
   });
   form.addEventListener("submit", handleSubmit);
-  categoryInput.addEventListener("input", App.debounce(renderSuggestions, 120));
-  suggestions.addEventListener("click", (event) => {
+  agenticForm?.addEventListener("submit", handleAgenticSubmit);
+  agenticReset?.addEventListener("click", resetAgenticConversation);
+  categoryInput.addEventListener("input", App.debounce(renderSuggestions, 300));
+  categorySuggestions.addEventListener("click", (event) => {
     const button = event.target.closest("[data-category]");
     if (!button) return;
     categoryInput.value = button.dataset.category;
-    suggestions.classList.remove("open");
+    categorySuggestions.classList.remove("open");
+  });
+  majorNameInput.addEventListener("input", App.debounce(renderMajorNameSuggestions, 300));
+  majorNameSuggestions.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-major-name]");
+    if (!button) return;
+    majorNameInput.value = button.dataset.majorName;
+    if (button.dataset.majorCategory) categoryInput.value = button.dataset.majorCategory;
+    majorNameSuggestions.classList.remove("open");
   });
   form.elements.bucket_limit.addEventListener("input", (event) => {
     document.querySelector("[data-bucket-count]").textContent = event.target.value;
